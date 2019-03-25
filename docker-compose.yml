@@ -2,7 +2,6 @@ version: '3'
 services:
 
   # PostgreSQL
-
   db:
     image: postgres:9.5
     restart: always
@@ -13,24 +12,6 @@ services:
     #   - 5432:5432
     # volumes:
     #   - ./db/postgres:/var/lib/postgresql/data
-
-
-  # MySQL
-
-  # db:
-  #   image: mysql:5.7
-  #   container_name: mysql
-  #   restart: always
-  #   environment:
-  #     TZ: Asia/Tokyo
-  #     MYSQL_ROOT_PASSWORD: password
-  #     MYSQL_PASSWORD: password
-  #     MYSQL_USER: redmine
-  #   # ports:
-  #   #   - 3306:3306
-  #   # volumes:
-  #   #   - ./db/mysql:/var/lib/mysql
-  #   # command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
 
   app:
     build: .
@@ -48,15 +29,19 @@ services:
       REDMINE_MAIL_DOMAIN: example.com
       REDMINE_IMAGEMGICK_PATH: /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
 
+      AWS_ACCESS_KEY_ID: 
+      AWS_SECRET_ACCESS_KEY: 
+      S3_BUCKET_NAME: 
+      S3_FOLDER_NAME: files
+      S3_ENDPOINT: s3.amazonaws.com
+
     ports: 
       - "3000:3000"
-      # - "25:25"
     depends_on:
       - db
     volumes:
       - .:/var/lib/redmine
-      # - /usr/sbin/sendmail:/usr/sbin/sendmail
-      # - /usr/sbin/postfix:/usr/sbin/postfix
+      
 # volumes:
 #   redmine_data:
 #     driver: local
