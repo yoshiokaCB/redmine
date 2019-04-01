@@ -24,6 +24,8 @@
     echo "  encoding: <%= ENV['RAILS_DB_ENCODING'] %>"; \
 } | tee /var/lib/redmine/config/database.yml
 
+if [ $RAILS_ENV -lt 'production' -o $RAILS_ENV -lt 'development' ]; then
+
 { \
     echo "default:"; \
     echo "  email_delivery:"; \
@@ -34,6 +36,10 @@
     echo "      domain: <%= ENV['REDMINE_MAIL_DOMAIN'] %>"; \
     echo "  rmagick_font_path: <%= ENV['REDMINE_IMAGEMGICK_PATH'] %>"; \
 } | tee /var/lib/redmine/config/configuration.yml
+
+else
+  rm -rf /var/lib/redmine/config/configuration.yml
+fi
 
 bundle exec rake generate_secret_token
 

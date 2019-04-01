@@ -20,7 +20,6 @@ RUN set -eux; \
 		imagemagick libmagick++-dev \
 		build-essential \
     libpq-dev \
-    postfix \
     ; \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*;
@@ -83,7 +82,7 @@ RUN chmod +x /start.sh && \
 # RUN chmod +x /docker-entrypoint.sh && chmod +x /docker-entrypoint.rb
 
 
-EXPOSE 3000 80 25
+EXPOSE 3000
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/start.sh"]
