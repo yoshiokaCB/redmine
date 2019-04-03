@@ -29,7 +29,7 @@ $ docker-compose run --rm --service-ports app
 $ docker-compose run --rm -e RAILS_ENV=test app rake test
 
 # Test specified file
-$ docker-compose run --rm -e RAILS_ENV=test app rake test
+$ docker-compose run --rm -e RAILS_ENV=test app rake test TEST=[path/to/file]
 
 ```
 

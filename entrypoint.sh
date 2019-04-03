@@ -24,7 +24,7 @@
     echo "  encoding: <%= ENV['RAILS_DB_ENCODING'] %>"; \
 } | tee /var/lib/redmine/config/database.yml
 
-if [ $RAILS_ENV -lt 'production' -o $RAILS_ENV -lt 'development' ]; then
+if [ ! $RAILS_ENV = 'test' ]; then
 
 { \
     echo "default:"; \
