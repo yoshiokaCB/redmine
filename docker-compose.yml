@@ -1,0 +1,64 @@
+version: '3'
+services:
+
+  # PostgreSQL
+
+  db:
+    image: postgres:9.5
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: redmine
+    # ports:
+    #   - 5432:5432
+    # volumes:
+    #   - ./db/postgres:/var/lib/postgresql/data
+
+
+  # MySQL
+
+  # db:
+  #   image: mysql:5.7
+  #   container_name: mysql
+  #   restart: always
+  #   environment:
+  #     TZ: Asia/Tokyo
+  #     MYSQL_ROOT_PASSWORD: password
+  #     MYSQL_PASSWORD: password
+  #     MYSQL_USER: redmine
+  #   # ports:
+  #   #   - 3306:3306
+  #   # volumes:
+  #   #   - ./db/mysql:/var/lib/mysql
+  #   # command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
+
+  app:
+    build: .
+    environment:
+      RAILS_DB_HOST: db
+      RAILS_DB: redmine
+      RAILS_DB_USERNAME: redmine
+      RAILS_DB_PASSWORD: password
+      RAILS_DB_ENCODING: utf8
+      RAILS_ENV: development
+
+      REDMINE_MAIL_DELIVERY_METHOD: smtp
+      REDMINE_MAIL_ADDRESS: localhost
+      REDMINE_MAIL_PORT: 25
+      REDMINE_MAIL_DOMAIN: example.com
+      REDMINE_IMAGEMGICK_PATH: /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+
+    ports: 
+      - "3000:3000"
+      # - "25:25"
+    depends_on:
+      - db
+    volumes:
+      - .:/var/lib/redmine
+      # - /usr/sbin/sendmail:/usr/sbin/sendmail
+      # - /usr/sbin/postfix:/usr/sbin/postfix
+# volumes:
+#   redmine_data:
+#     driver: local
+#   postgres_data:
+#     driver: local
