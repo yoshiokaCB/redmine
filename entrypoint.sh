@@ -2,21 +2,21 @@
 
 { \
     echo "production:"; \
-    echo "  adapter: postgresql"; \
+    echo "  adapter: <%= ENV['RAILS_DB_ADAPTER'] %>"; \
     echo "  database: <%= ENV['RAILS_DB'] %>"; \
     echo "  username: <%= ENV['RAILS_DB_USERNAME'] %>"; \
     echo "  password: <%= ENV['RAILS_DB_PASSWORD'] %>"; \
     echo "  host: <%= ENV['RAILS_DB_HOST'] %>"; \
     echo "  encoding: <%= ENV['RAILS_DB_ENCODING'] %>"; \
     echo "development:"; \
-    echo "  adapter: postgresql"; \
+    echo "  adapter: <%= ENV['RAILS_DB_ADAPTER'] %>"; \
     echo "  database: <%= ENV['RAILS_DB'] %>_development"; \
     echo "  username: <%= ENV['RAILS_DB_USERNAME'] %>"; \
     echo "  password: <%= ENV['RAILS_DB_PASSWORD'] %>"; \
     echo "  host: <%= ENV['RAILS_DB_HOST'] %>"; \
     echo "  encoding: <%= ENV['RAILS_DB_ENCODING'] %>"; \
     echo "test:"; \
-    echo "  adapter: postgresql"; \
+    echo "  adapter: <%= ENV['RAILS_DB_ADAPTER'] %>"; \
     echo "  database: <%= ENV['RAILS_DB'] %>_test"; \
     echo "  username: <%= ENV['RAILS_DB_USERNAME'] %>"; \
     echo "  password: <%= ENV['RAILS_DB_PASSWORD'] %>"; \
@@ -42,5 +42,11 @@ else
 fi
 
 bundle exec rake generate_secret_token
+
+bundle install
+# bundle update
+bundle exec rake db:create
+bundle exec rake db:migrate
+bundle exec rake redmine:plugins:migrate
 
 exec "$@"

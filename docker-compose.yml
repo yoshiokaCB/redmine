@@ -3,41 +3,44 @@ services:
 
   # PostgreSQL
 
-  db:
-    image: postgres:9.5
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: redmine
-    # ports:
-    #   - 5432:5432
-    # volumes:
-    #   - ./db/postgres:/var/lib/postgresql/data
+  # db:
+  #   image: postgres:9.5
+  #   restart: always
+  #   environment:
+  #     POSTGRES_PASSWORD: password
+  #     POSTGRES_USER: redmine
+  #   # ports:
+  #   #   - 5432:5432
+  #   # volumes:
+  #   #   - ./db/postgres:/var/lib/postgresql/data
 
 
   # MySQL
 
-  # db:
-  #   image: mysql:5.7
-  #   container_name: mysql
-  #   restart: always
-  #   environment:
-  #     TZ: Asia/Tokyo
-  #     MYSQL_ROOT_PASSWORD: password
-  #     MYSQL_PASSWORD: password
-  #     MYSQL_USER: redmine
-  #   # ports:
-  #   #   - 3306:3306
-  #   # volumes:
-  #   #   - ./db/mysql:/var/lib/mysql
-  #   # command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
+  db:
+    image: mysql:5.7
+    container_name: mysql
+    restart: always
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_PASSWORD: password
+      MYSQL_USER: redmine
+    # ports:
+    #   - 3306:3306
+    # volumes:
+    #   - ./db/mysql:/var/lib/mysql
+    # command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
 
   app:
     build: .
     environment:
+      # RAILS_DB_ADAPTER: postgresql
+      RAILS_DB_ADAPTER: mysql2
       RAILS_DB_HOST: db
       RAILS_DB: redmine
-      RAILS_DB_USERNAME: redmine
+      # RAILS_DB_USERNAME: redmine
+      RAILS_DB_USERNAME: root
       RAILS_DB_PASSWORD: password
       RAILS_DB_ENCODING: utf8
       RAILS_ENV: development
