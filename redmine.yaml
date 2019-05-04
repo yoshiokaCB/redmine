@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redmine
+  labels:
+    app: redmine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redmine
+  template:
+    metadata:
+      labels:
+        app: redmine
+    spec:
+      containers:
+        - image: asia.gcr.io/gcpug-04/redmine_app
+          name: redmine
+          env:
+          - name: RAILS_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql
+                key: password
+          - name: RAILS_DB_ADAPTER
+            value: mysql2
+          # - name: RAILS_DB_HOST
+          #   value: mysql:3306
+          - name: RAILS_DB_HOST
+            value: mysql
+          - name: RAILS_DB
+            value: redmine
+          - name: RAILS_DB_USERNAME
+            value: root
+          # - name: RAILS_DB_PASSWORD
+          #   value: password
+          - name: RAILS_DB_ENCODING
+            value: utf8
+          - name: RAILS_ENV
+            value: development
+          - name: REDMINE_MAIL_DELIVERY_METHOD
+            value: smtp
+          - name: REDMINE_MAIL_ADDRESS
+            value: localhost
+          - name: REDMINE_MAIL_PORT
+            value: "25"
+          - name: REDMINE_MAIL_DOMAIN
+            value: example.com
+          - name: REDMINE_IMAGEMGICK_PATH
+            value: /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+          ports:
+            - containerPort: 3000
+              name: redmine
+          volumeMounts:
+            - name: redmine-persistent-storage
+              mountPath: /var/lib/redmine/files
+              # mountPath: /var/www/html
+      volumes:
+        - name: redmine-persistent-storage
+          persistentVolumeClaim:
+            claimName: redmine-volumeclaim
