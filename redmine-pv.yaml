@@ -1,0 +1,16 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-redmine
+  labels:
+    app: pv-redmine
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "nfs"
+spec:
+  capacity:
+    storage: 30Gi
+  accessModes:
+  - ReadWriteMany
+  nfs:
+    path: /vol01
+    server: x.x.x.x(ip)

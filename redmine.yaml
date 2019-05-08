@@ -18,27 +18,23 @@ spec:
         - image: asia.gcr.io/gcpug-04/redmine_app
           name: redmine
           env:
+          - name: RAILS_DB_ADAPTER
+            value: mysql2
+          - name: RAILS_DB_HOST
+            value: 127.0.0.1
+          - name: RAILS_DB
+            value: redmine
+          - name: RAILS_DB_USERNAME
+            value: root
           - name: RAILS_DB_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: mysql
                 key: password
-          - name: RAILS_DB_ADAPTER
-            value: mysql2
-          # - name: RAILS_DB_HOST
-          #   value: mysql:3306
-          - name: RAILS_DB_HOST
-            value: mysql
-          - name: RAILS_DB
-            value: redmine
-          - name: RAILS_DB_USERNAME
-            value: root
-          # - name: RAILS_DB_PASSWORD
-          #   value: password
           - name: RAILS_DB_ENCODING
             value: utf8
           - name: RAILS_ENV
-            value: development
+            value: production
           - name: REDMINE_MAIL_DELIVERY_METHOD
             value: smtp
           - name: REDMINE_MAIL_ADDRESS
@@ -49,14 +45,34 @@ spec:
             value: example.com
           - name: REDMINE_IMAGEMGICK_PATH
             value: /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+          - name: SECRET_KEY_BASE
+            value: xxxxxxxxx
           ports:
             - containerPort: 3000
               name: redmine
           volumeMounts:
             - name: redmine-persistent-storage
               mountPath: /var/lib/redmine/files
-              # mountPath: /var/www/html
+        # [START proxy_container]
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.11
+          command: ["/cloud_sql_proxy",
+                    "-instances=gcpug-04:asia-northeast1:redmine-mysql=tcp:3306",
+                    "-credential_file=/secrets/cloudsql/credentials.json"]
+          # [START cloudsql_security_context]
+          securityContext:
+            runAsUser: 2  # non-root user
+            allowPrivilegeEscalation: false
+          # [END cloudsql_security_context]
+          volumeMounts:
+            - name: cloudsql-instance-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+        # [END proxy_container]
       volumes:
         - name: redmine-persistent-storage
           persistentVolumeClaim:
             claimName: redmine-volumeclaim
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: cloudsql-instance-credentials

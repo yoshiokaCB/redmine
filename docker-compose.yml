@@ -2,7 +2,6 @@ version: '3'
 services:
 
   # PostgreSQL
-
   # db:
   #   image: postgres:9.5
   #   restart: always
@@ -14,9 +13,7 @@ services:
   #   # volumes:
   #   #   - ./db/postgres:/var/lib/postgresql/data
 
-
   # MySQL
-
   db:
     image: mysql:5.7
     container_name: mysql
@@ -24,8 +21,9 @@ services:
     environment:
       TZ: Asia/Tokyo
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_PASSWORD: password
-      MYSQL_USER: redmine
+      MYSQL_DATABASE: redmine
+      # MYSQL_PASSWORD: password
+      # MYSQL_USER: redmine
     # ports:
     #   - 3306:3306
     # volumes:
@@ -33,7 +31,10 @@ services:
     # command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
 
   app:
-    build: .
+    build:
+      context: .
+      args:
+        RAILS_DB_ADAPTER: mysql2
     environment:
       # RAILS_DB_ADAPTER: postgresql
       RAILS_DB_ADAPTER: mysql2
@@ -44,6 +45,7 @@ services:
       RAILS_DB_PASSWORD: password
       RAILS_DB_ENCODING: utf8
       RAILS_ENV: development
+      # SECRET_KEY_BASE: e4a046de71177a72ff251013cc10924db7673c19497d6fe9c463ab8c43f5d71fc1509891aea726cc3e6f32c78bb8fdca0f4b1834e8502964e2f187aff90ea307
 
       REDMINE_MAIL_DELIVERY_METHOD: smtp
       REDMINE_MAIL_ADDRESS: localhost
@@ -53,15 +55,7 @@ services:
 
     ports: 
       - "3000:3000"
-      # - "25:25"
     depends_on:
       - db
     volumes:
       - .:/var/lib/redmine
-      # - /usr/sbin/sendmail:/usr/sbin/sendmail
-      # - /usr/sbin/postfix:/usr/sbin/postfix
-# volumes:
-#   redmine_data:
-#     driver: local
-#   postgres_data:
-#     driver: local
