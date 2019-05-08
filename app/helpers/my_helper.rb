@@ -37,7 +37,7 @@ module MyHelper
       handle = content_tag('span', '', :class => 'sort-handle', :title => l(:button_move))
       close = link_to(l(:button_delete),
                       {:action => "remove_block", :block => block},
-                      :remote => true, :method => 'post',
+                      :remote => true, :method => 'post', 
                       :class => "icon-only icon-close", :title => l(:button_delete))
       content = content_tag('div', handle + close, :class => 'contextual') + content
 
@@ -107,6 +107,17 @@ module MyHelper
   def render_issuesreportedbyme_block(block, settings)
     query = IssueQuery.new(:name => l(:label_reported_issues), :user => User.current)
     query.add_filter 'author_id', '=', ['me']
+    query.add_filter 'project.status', '=', ["#{Project::STATUS_ACTIVE}"]
+    query.column_names = settings[:columns].presence || ['project', 'tracker', 'status', 'subject']
+    query.sort_criteria = settings[:sort].presence || [['updated_on', 'desc']]
+    issues = query.issues(:limit => 10)
+
+    render :partial => 'my/blocks/issues', :locals => {:query => query, :issues => issues, :block => block}
+  end
+
+  def render_issuesupdatedbyme_block(block, settings)
+    query = IssueQuery.new(:name => l(:label_updated_issues), :user => User.current)
+    query.add_filter 'updated_by', '=', ['me']
     query.add_filter 'project.status', '=', ["#{Project::STATUS_ACTIVE}"]
     query.column_names = settings[:columns].presence || ['project', 'tracker', 'status', 'subject']
     query.sort_criteria = settings[:sort].presence || [['updated_on', 'desc']]

@@ -156,20 +156,30 @@ RAW
   end
 
   def test_attached_images_with_textile_and_non_ascii_filename
-    attachment = Attachment.generate!(:filename => 'café.jpg')
+    to_test = {
+      'CAFÉ.JPG' => 'CAF%C3%89.JPG',
+      'crème.jpg' => 'cr%C3%A8me.jpg',
+    }
     with_settings :text_formatting => 'textile' do
-      assert_include %(<img src="/attachments/download/#{attachment.id}/caf%C3%A9.jpg" alt="" />),
-        textilizable("!café.jpg!)", :attachments => [attachment])
+      to_test.each do |filename, result|
+        attachment = Attachment.generate!(:filename => filename)
+        assert_include %(<img src="/attachments/download/#{attachment.id}/#{result}" alt="" />), textilizable("!#{filename}!", :attachments => [attachment])
+      end
     end
   end
 
   def test_attached_images_with_markdown_and_non_ascii_filename
     skip unless Object.const_defined?(:Redcarpet)
 
-    attachment = Attachment.generate!(:filename => 'café.jpg')
+    to_test = {
+      'CAFÉ.JPG' => 'CAF%C3%89.JPG',
+      'crème.jpg' => 'cr%C3%A8me.jpg',
+    }
     with_settings :text_formatting => 'markdown' do
-      assert_include %(<img src="/attachments/download/#{attachment.id}/caf%C3%A9.jpg" alt="" />),
-        textilizable("![](café.jpg)", :attachments => [attachment])
+      to_test.each do |filename, result|
+        attachment = Attachment.generate!(:filename => filename)
+        assert_include %(<img src="/attachments/download/#{attachment.id}/#{result}" alt="" />), textilizable("![](#{filename})", :attachments => [attachment])
+      end
     end
   end
 
@@ -1516,6 +1526,21 @@ RAW
   def test_avatar_disabled
     with_settings :gravatar_enabled => '0' do
       assert_equal '', avatar(User.find_by_mail('jsmith@somenet.foo'))
+    end
+  end
+
+  def test_avatar_server_url
+    to_test = {
+      'https://www.gravatar.com' => %r|https://www.gravatar.com/avatar/\h{32}|,
+      'https://seccdn.libravatar.org' => %r|https://seccdn.libravatar.org/avatar/\h{32}|,
+      'http://localhost:8080' => %r|http://localhost:8080/avatar/\h{32}|,
+    }
+    with_settings :gravatar_enabled => '1' do
+      to_test.each do |url, expected|
+        Redmine::Configuration.with 'avatar_server_url' => url do
+          assert_match expected, avatar('<jsmith@somenet.foo>')
+        end
+      end
     end
   end
 

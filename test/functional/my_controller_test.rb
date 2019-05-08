@@ -21,7 +21,8 @@ require File.expand_path('../../test_helper', __FILE__)
 
 class MyControllerTest < Redmine::ControllerTest
   fixtures :users, :email_addresses, :user_preferences, :roles, :projects, :members, :member_roles,
-  :issues, :issue_statuses, :trackers, :enumerations, :custom_fields, :auth_sources, :queries, :enabled_modules
+  :issues, :issue_statuses, :trackers, :enumerations, :custom_fields, :auth_sources, :queries, :enabled_modules,
+  :journals
 
   def setup
     @request.session[:user_id] = 2
@@ -218,6 +219,31 @@ class MyControllerTest < Redmine::ControllerTest
     end
   end
 
+  def test_page_with_updated_issues_block
+    preferences = User.find(2).pref
+    preferences.my_page_layout = {'top' => ['issuesupdatedbyme']}
+    preferences.my_page_settings = {'issuesupdatedbyme' => {}}
+    preferences.save!
+
+    project = Project.find(3)
+    project.close
+
+    get :page
+
+    assert_response :success
+    assert_select '#block-issuesupdatedbyme' do
+      report_url = CGI.unescape(css_select('h3 a').first.attr('href'))
+      assert_match 'f[]=project.status', report_url
+      assert_match 'v[project.status][]=1', report_url
+      assert_match 'f[]=updated_by', report_url
+      assert_match 'v[updated_by][]=me', report_url
+
+      assert_select 'table.issues tbody tr', 2
+      assert_select 'table.issues tbody tr[id=?]', 'issue-1', 1, :title => 'Cannot print recipes'
+      assert_select 'table.issues tbody tr[id=?]', 'issue-14', 0
+    end
+  end
+
   def test_page_with_all_blocks
     blocks = Redmine::MyPage.blocks.keys
     preferences = User.find(2).pref
@@ -339,9 +365,11 @@ class MyControllerTest < Redmine::ControllerTest
 
   def test_my_account_with_avatar_enabled_should_link_to_edit_avatar
     with_settings :gravatar_enabled => '1' do
-      get :account
-      assert_response :success
-      assert_select 'a[href=?] img.gravatar', 'https://gravatar.com'
+      Redmine::Configuration.with 'avatar_server_url' => 'https://gravatar.com' do
+        get :account
+        assert_response :success
+        assert_select 'a[href=?] img.gravatar', 'https://gravatar.com'
+      end
     end
   end
 

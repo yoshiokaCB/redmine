@@ -84,7 +84,8 @@ module Redmine
           git_cmd(cmd_args) do |io|
             io.each_line do |line|
               branch_rev = line.match('\s*(\*?)\s*(.*?)\s*([0-9a-f]{40}).*$')
-              bran = GitBranch.new(branch_rev[2])
+              next unless branch_rev
+              bran = GitBranch.new(scm_iconv('UTF-8', @path_encoding, branch_rev[2]))
               bran.revision =  branch_rev[3]
               bran.scmid    =  branch_rev[3]
               bran.is_default = ( branch_rev[1] == '*' )
@@ -101,7 +102,7 @@ module Redmine
           @tags = []
           cmd_args = %w|tag|
           git_cmd(cmd_args) do |io|
-            @tags = io.readlines.sort!.map{|t| t.strip}
+            @tags = io.readlines.sort!.map{|t| scm_iconv('UTF-8', @path_encoding, t.strip)}
           end
           @tags
         rescue ScmCommandAborted
@@ -137,8 +138,9 @@ module Redmine
           p = scm_iconv(@path_encoding, 'UTF-8', path)
           entries = Entries.new
           cmd_args = %w|ls-tree -l|
-          cmd_args << "HEAD:#{p}"          if identifier.nil?
-          cmd_args << "#{identifier}:#{p}" if identifier
+          identifier = 'HEAD' if identifier.nil?
+          git_identifier = scm_iconv(@path_encoding, 'UTF-8', identifier)
+          cmd_args << "#{git_identifier}:#{p}"
           git_cmd(cmd_args) do |io|
             io.each_line do |line|
               e = line.chomp.to_s
@@ -204,8 +206,14 @@ module Redmine
           revisions = []
           if identifier_from || identifier_to
             revisions << +""
-            revisions[0] << "#{identifier_from}.." if identifier_from
-            revisions[0] << "#{identifier_to}" if identifier_to
+            if identifier_from
+              git_identifier_from = scm_iconv(@path_encoding, 'UTF-8', identifier_from)
+              revisions[0] << "#{git_identifier_from}.." if identifier_from
+            end
+            if identifier_to
+              git_identifier_to = scm_iconv(@path_encoding, 'UTF-8', identifier_to)
+              revisions[0] << "#{git_identifier_to}" if identifier_to
+            end
           else
             unless options[:includes].blank?
               revisions += options[:includes]
@@ -334,8 +342,9 @@ module Redmine
 
         def annotate(path, identifier=nil)
           identifier = 'HEAD' if identifier.blank?
+          git_identifier = scm_iconv(@path_encoding, 'UTF-8', identifier)
           cmd_args = %w|blame --encoding=UTF-8|
-          cmd_args << "-p" << identifier << "--" <<  scm_iconv(@path_encoding, 'UTF-8', path)
+          cmd_args << "-p" << git_identifier << "--" <<  scm_iconv(@path_encoding, 'UTF-8', path)
           blame = Annotate.new
           content = nil
           git_cmd(cmd_args) { |io| io.binmode; content = io.read }
@@ -366,11 +375,10 @@ module Redmine
         end
 
         def cat(path, identifier=nil)
-          if identifier.nil?
-            identifier = 'HEAD'
-          end
+          identifier = 'HEAD' if identifier.nil?
+          git_identifier = scm_iconv(@path_encoding, 'UTF-8', identifier)
           cmd_args = %w|show --no-color|
-          cmd_args << "#{identifier}:#{scm_iconv(@path_encoding, 'UTF-8', path)}"
+          cmd_args << "#{git_identifier}:#{scm_iconv(@path_encoding, 'UTF-8', path)}"
           cat = nil
           git_cmd(cmd_args) do |io|
             io.binmode

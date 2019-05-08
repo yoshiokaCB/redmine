@@ -52,6 +52,14 @@ module Redmine
       rescue
         false
       end
+
+      def filename_supported?(filename)
+        if highlighter.respond_to? :filename_supported?
+          highlighter.filename_supported? filename
+        else
+          false
+        end
+      end
     end
 
     module Rouge
@@ -85,7 +93,7 @@ module Redmine
           # See also: https://github.com/jneen/rouge/pull/1078
           text = text.gsub(/\r\n?/, "\n")
 
-          lexer =::Rouge::Lexer.guess_by_filename(filename)
+          lexer =::Rouge::Lexer.guess(:source => text, :filename => filename)
           formatter = ::Rouge::Formatters::HTML.new
           ::Rouge.highlight(text, lexer, CustomHTMLLinewise.new(formatter))
         end
@@ -101,7 +109,11 @@ module Redmine
         def language_supported?(language)
           find_lexer(language.to_s.downcase) ? true : false
         end
-        
+
+        def filename_supported?(filename)
+          !::Rouge::Lexer.guesses(:filename => filename).empty?
+        end
+
         private
         # Alias names used by CodeRay and not supported by Rouge
         LANG_ALIASES = {

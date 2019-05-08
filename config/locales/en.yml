@@ -346,6 +346,7 @@ en:
   field_group_by: Group results by
   field_sharing: Sharing
   field_parent_issue: Parent task
+  field_parent_issue_subject: Parent task subject
   field_member_of_group: "Assignee's group"
   field_assigned_to_role: "Assignee's role"
   field_text: Text field
@@ -487,6 +488,7 @@ en:
   permission_view_issues: View Issues
   permission_add_issues: Add issues
   permission_edit_issues: Edit issues
+  permission_edit_own_issues: Edit own issues
   permission_copy_issues: Copy issues
   permission_manage_issue_relations: Manage issue relations
   permission_set_issues_private: Set issues public or private
@@ -624,6 +626,7 @@ en:
   label_reported_issues: Reported issues
   label_assigned_issues: Assigned issues
   label_assigned_to_me_issues: Issues assigned to me
+  label_updated_issues: Updated issues
   label_last_login: Last connection
   label_registered_on: Registered on
   label_activity: Activity
@@ -1045,6 +1048,8 @@ en:
   label_inherited_from_group: "Inherited from group %{name}"
   label_trackers_description: Trackers description
   label_open_trackers_description: View all trackers description
+  label_preferred_body_part_text: Text
+  label_preferred_body_part_html: HTML (experimental)
 
   button_login: Login
   button_submit: Submit
@@ -1055,7 +1060,7 @@ en:
   button_expand_all: Expand all
   button_delete: Delete
   button_create: Create
-  button_create_and_continue: Create and continue
+  button_create_and_continue: Create and add another
   button_test: Test
   button_edit: Edit
   button_edit_associated_wikipage: "Edit associated Wiki page: %{page_title}"
@@ -1196,6 +1201,9 @@ en:
   text_session_expiration_settings: "Warning: changing these settings may expire the current sessions including yours."
   text_project_closed: This project is closed and read-only.
   text_turning_multiple_off: "If you disable multiple values, multiple values will be removed in order to preserve only one value per item."
+  text_select_apply_tracker: "Select tracker"
+  text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>. You can configure it in config/configuration.yml.
+
 
   default_role_manager: Manager
   default_role_developer: Developer

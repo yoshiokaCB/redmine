@@ -802,7 +802,7 @@ fi:
   setting_diff_max_lines_displayed: Max number of diff lines displayed
   text_plugin_assets_writable: Plugin assets directory writable
   warning_attachments_not_saved: "%{count} file(s) could not be saved."
-  button_create_and_continue: Create and continue
+  button_create_and_continue: Create and add another
   text_custom_field_possible_values_info: 'One line for each value'
   label_display: Display
   field_editable: Editable
@@ -1293,3 +1293,11 @@ fi:
   label_inherited_from_group: Inherited from group %{name}
   label_trackers_description: Trackers description
   label_open_trackers_description: View all trackers description
+  label_preferred_body_part_text: Text
+  label_preferred_body_part_html: HTML (experimental)
+  field_parent_issue_subject: Parent task subject
+  permission_edit_own_issues: Edit own issues
+  text_select_apply_tracker: Select tracker
+  label_updated_issues: Updated issues
+  text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
+    You can configure it in config/configuration.yml.

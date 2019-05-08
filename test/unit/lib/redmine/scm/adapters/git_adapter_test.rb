@@ -75,23 +75,33 @@ class GitAdapterTest < ActiveSupport::TestCase
       @adapter.branches.each do |b|
         brs << b
       end
-      assert_equal 6, brs.length
+      assert_equal 8, brs.length
       br_issue_8857 = brs[0]
       assert_equal 'issue-8857', br_issue_8857.to_s 
       assert_equal '2a682156a3b6e77a8bf9cd4590e8db757f3c6c78', br_issue_8857.revision
       assert_equal br_issue_8857.scmid, br_issue_8857.revision
       assert_equal false, br_issue_8857.is_default
-      br_latin_1_path = brs[1]
+      br_latin_1_branch1 = brs[1]
+      assert_equal "latin-1-branch-#{@char_1}-01", br_latin_1_branch1.to_s 
+      assert_equal '4fc55c43bf3d3dc2efb66145365ddc17639ce81e', br_latin_1_branch1.revision
+      assert_equal br_latin_1_branch1.scmid, br_latin_1_branch1.revision
+      assert_equal false, br_latin_1_branch1.is_default
+      br_latin_1_branch2 = brs[2]
+      assert_equal "latin-1-branch-#{@char_1}-02", br_latin_1_branch2.to_s 
+      assert_equal '1ca7f5ed374f3cb31a93ae5215c2e25cc6ec5127', br_latin_1_branch2.revision
+      assert_equal br_latin_1_branch2.scmid, br_latin_1_branch2.revision
+      assert_equal false, br_latin_1_branch2.is_default
+      br_latin_1_path = brs[3]
       assert_equal 'latin-1-path-encoding', br_latin_1_path.to_s 
       assert_equal '1ca7f5ed374f3cb31a93ae5215c2e25cc6ec5127', br_latin_1_path.revision
       assert_equal br_latin_1_path.scmid, br_latin_1_path.revision
       assert_equal false, br_latin_1_path.is_default
-      br_master = brs[2]
+      br_master = brs[4]
       assert_equal 'master', br_master.to_s
       assert_equal '83ca5fd546063a3c7dc2e568ba3355661a9e2b2c', br_master.revision
       assert_equal br_master.scmid, br_master.revision
       assert_equal false, br_master.is_default
-      br_master_20120212 = brs[3]
+      br_master_20120212 = brs[5]
       assert_equal 'master-20120212', br_master_20120212.to_s
       assert_equal '83ca5fd546063a3c7dc2e568ba3355661a9e2b2c', br_master_20120212.revision
       assert_equal br_master_20120212.scmid, br_master_20120212.revision
@@ -116,6 +126,7 @@ class GitAdapterTest < ActiveSupport::TestCase
       assert_equal  [
             "tag00.lightweight",
             "tag01.annotated",
+            "tag02.lightweight.#{@char_1}.01",
           ], @adapter.tags
     end
 
@@ -212,6 +223,25 @@ class GitAdapterTest < ActiveSupport::TestCase
       assert_equal 3, revs2.length
       assert_equal '4fc55c43bf3d3dc2efb66145365ddc17639ce81e', revs2[ 0].identifier
       assert_equal '1ca7f5ed374f3cb31a93ae5215c2e25cc6ec5127', revs2[-1].identifier
+    end
+
+    def test_revisions_latin_1_identifier
+      if WINDOWS_PASS
+        puts WINDOWS_SKIP_STR
+      elsif JRUBY_SKIP
+        puts JRUBY_SKIP_STR
+      else
+        revs1 = []
+        @adapter.revisions('',
+                         "latin-1-branch-#{@char_1}-01",
+                         "latin-1-branch-#{@char_1}-02",
+                         {:reverse => true}) do |rev|
+          revs1 << rev
+        end
+      end
+      assert_equal 2, revs1.length
+      assert_equal '64f1f3e89ad1cb57976ff0ad99a107012ba3481d', revs1[ 0].identifier
+      assert_equal '1ca7f5ed374f3cb31a93ae5215c2e25cc6ec5127', revs1[ 1].identifier
     end
 
     def test_revisions_invalid_rev
@@ -369,8 +399,25 @@ class GitAdapterTest < ActiveSupport::TestCase
       assert_equal "# This program is free software; you can redistribute it and/or",
                    annotate.lines[4].strip
       assert_equal "7234cb2750b63f47bff735edc50a1c0a433c2518",
-                    annotate.revisions[4].identifier
+                   annotate.revisions[4].identifier
       assert_equal "jsmith", annotate.revisions[4].author
+    end
+
+    def test_annotate_latin_1_identifier
+      if WINDOWS_PASS
+        puts WINDOWS_SKIP_STR
+      elsif JRUBY_SKIP
+        puts JRUBY_SKIP_STR
+      else
+        annotate = @adapter.annotate('sources/watchers_controller.rb',
+                                     "latin-1-branch-#{@char_1}-02")
+        assert_equal 40, annotate.lines.size
+        assert_equal "# This program is free software; you can redistribute it and/or",
+                     annotate.lines[3].strip
+        assert_equal "7234cb2750b63f47bff735edc50a1c0a433c2518",
+                     annotate.revisions[3].identifier
+        assert_equal "jsmith", annotate.revisions[3].author
+      end
     end
 
     def test_annotate_moved_file
@@ -391,11 +438,10 @@ class GitAdapterTest < ActiveSupport::TestCase
     def test_last_rev_with_spaces_in_filename
       last_rev = @adapter.lastrev("filemane with spaces.txt",
                                   "ed5bb786bbda2dee66a2d50faf51429dbc043a7b")
-      last_rev_author = last_rev.author
       assert_equal "ed5bb786bbda2dee66a2d50faf51429dbc043a7b", last_rev.scmid
       assert_equal "ed5bb786bbda2dee66a2d50faf51429dbc043a7b", last_rev.identifier
       assert_equal "#{@str_felix_hex} <felix@fachschaften.org>",
-                     last_rev.author
+                   last_rev.author
       assert_equal Time.gm(2010, 9, 18, 19, 59, 46), last_rev.time
     end
 
@@ -508,6 +554,23 @@ class GitAdapterTest < ActiveSupport::TestCase
       end
     end
 
+    def test_entries_latin_1_identifier
+      if WINDOWS_PASS
+        puts WINDOWS_SKIP_STR
+      elsif JRUBY_SKIP
+        puts JRUBY_SKIP_STR
+      else
+        entries1 = @adapter.entries(nil,
+                                    "latin-1-branch-#{@char_1}-02")
+        assert entries1
+        assert_equal 4, entries1.size
+        f1 = entries1[0]
+        assert_equal "images", f1.name
+        assert_equal "images", f1.path
+        assert_equal 'dir', f1.kind
+      end
+    end
+
     def test_entry
       entry = @adapter.entry()
       assert_equal "", entry.path
@@ -552,6 +615,17 @@ class GitAdapterTest < ActiveSupport::TestCase
                                 ""
                               )
       assert_equal "UTF-8", adpt2.path_encoding
+    end
+
+    def test_cat_latin_1_identifier
+      if WINDOWS_PASS
+        puts WINDOWS_SKIP_STR
+      elsif JRUBY_SKIP
+        puts JRUBY_SKIP_STR
+      else
+        assert @adapter.cat('sources/watchers_controller.rb',
+                            "latin-1-branch-#{@char_1}-02")
+      end
     end
 
     def test_cat_path_invalid

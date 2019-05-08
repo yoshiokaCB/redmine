@@ -774,7 +774,7 @@ module ApplicationHelper
     attachments += obj.attachments if obj.respond_to?(:attachments)
     if attachments.present?
       text.gsub!(/src="([^\/"]+\.(bmp|gif|jpg|jpe|jpeg|png))"(\s+alt="([^"]*)")?/i) do |m|
-        filename, ext, alt, alttext = $1.downcase, $2, $3, $4
+        filename, ext, alt, alttext = $1, $2, $3, $4
         # search for the picture in attachments
         if found = Attachment.latest_attach(attachments, CGI.unescape(filename))
           image_url = download_named_attachment_url(found, found.filename, :only_path => only_path)
@@ -1507,7 +1507,7 @@ module ApplicationHelper
   # Returns a link to edit user's avatar if avatars are enabled
   def avatar_edit_link(user, options={})
     if Setting.gravatar_enabled?
-      url = "https://gravatar.com"
+      url = Redmine::Configuration['avatar_server_url']
       link_to avatar(user, {:title => l(:button_edit)}.merge(options)), url, :target => '_blank'
     end
   end
@@ -1518,7 +1518,7 @@ module ApplicationHelper
 
   # Returns the javascript tags that are included in the html layout head
   def javascript_heads
-    tags = javascript_include_tag('jquery-1.11.1-ui-1.11.0-ujs-4.3.1', 'application', 'responsive')
+    tags = javascript_include_tag('jquery-1.11.1-ui-1.11.0-ujs-5.2.3', 'application', 'responsive')
     unless User.current.pref.warn_on_leaving_unsaved == '0'
       tags << "\n".html_safe + javascript_tag("$(window).load(function(){ warnLeavingUnsaved('#{escape_javascript l(:text_warn_on_leaving_unsaved)}'); });")
     end

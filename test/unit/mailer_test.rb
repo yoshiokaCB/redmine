@@ -252,6 +252,18 @@ class MailerTest < ActiveSupport::TestCase
     assert_equal 'Redmine app <redmine@example.net>', mail.header['From'].to_s
   end
 
+  def test_from_header_with_rfc_non_compliant_phrase
+    # Send out the email instead of raising an exception
+    # no matter if the emission email address is not RFC compliant
+    assert_nothing_raised do
+      with_settings :mail_from => '[Redmine app] <redmine@example.net>' do
+        Mailer.deliver_test_email(User.find(1))
+      end
+    end
+    mail = last_email
+    assert_match /<redmine@example\.net>/, mail.from_addrs.first
+    assert_equal '[Redmine app] <redmine@example.net>', mail.header['From'].to_s
+  end
   def test_from_header_with_author_name
     # Use the author's name or Setting.app_title as a display name
     # when Setting.mail_from does not include a display name
@@ -450,10 +462,12 @@ class MailerTest < ActiveSupport::TestCase
   def test_issue_edit_subject_should_include_status_changes_if_setting_is_enabled
     with_settings :show_status_changes_in_mail_subject => 1 do
       issue = Issue.find(2)
-      issue.status_id = 4
-      issue.save!
-      Mailer.deliver_issue_add(issue)
+      issue.init_journal(User.current)
+      issue.update(:status_id => 4)
+      journal = issue.journals.last
+      Mailer.deliver_issue_edit(journal)
 
+      assert journal.new_value_for('status_id')
       mail = last_email
       assert_equal "[eCookbook - Feature request #2] (Feedback) Add ingredients categories", mail.subject
     end
@@ -462,10 +476,12 @@ class MailerTest < ActiveSupport::TestCase
   def test_issue_edit_subject_should_not_include_status_changes_if_setting_is_disabled
     with_settings :show_status_changes_in_mail_subject => 0 do
       issue = Issue.find(2)
-      issue.status_id = 4
-      issue.save!
-      Mailer.deliver_issue_add(issue)
+      issue.init_journal(User.current)
+      issue.update(:status_id => 4)
+      journal = issue.journals.last
+      Mailer.deliver_issue_edit(journal)
 
+      assert journal.new_value_for('status_id')
       mail = last_email
       assert_equal "[eCookbook - Feature request #2] Add ingredients categories", mail.subject
     end
@@ -609,10 +625,12 @@ class MailerTest < ActiveSupport::TestCase
     mail = last_email
     assert mail.bcc.include?('dlopper@somenet.foo')
     assert_mail_body_match 'Bug #3: Error 281 when updating a recipe', mail
+    assert_mail_body_match 'View all issues (2 open)', mail
     assert_select_email do
       assert_select 'a[href=?]',
                     'http://localhost:3000/issues?assigned_to_id=me&set_filter=1&sort=due_date%3Aasc',
                     :text => 'View all issues'
+      assert_select '/p:nth-last-of-type(1)', :text => 'View all issues (2 open)'
     end
     assert_equal '1 issue(s) due in the next 42 days', mail.subject
   end
@@ -659,10 +677,15 @@ class MailerTest < ActiveSupport::TestCase
   def test_reminder_should_include_issues_assigned_to_groups
     with_settings :default_language => 'en', :issue_group_assignment => '1' do
       group = Group.generate!
+      user_dlopper = User.find(3)
       Member.create!(:project_id => 1, :principal => group, :role_ids => [1])
       group.users << User.find(2)
-      group.users << User.find(3)
+      group.users << user_dlopper
 
+      Issue.update_all(:assigned_to_id => nil)
+      due_date = 10.days.from_now
+      Issue.update(1, :due_date => due_date, :assigned_to_id => user_dlopper.id)
+      Issue.update(2, :due_date => due_date, :assigned_to_id => group.id)
       Issue.create!(:project_id => 1, :tracker_id => 1, :status_id => 1,
                       :subject => 'Assigned to group', :assigned_to => group,
                       :due_date => 5.days.from_now,
@@ -673,7 +696,9 @@ class MailerTest < ActiveSupport::TestCase
       assert_equal 2, ActionMailer::Base.deliveries.size
       assert_equal %w(dlopper@somenet.foo jsmith@somenet.foo), recipients
       ActionMailer::Base.deliveries.each do |mail|
+        assert_mail_body_match '1 issue(s) that are assigned to you are due in the next 7 days::', mail
         assert_mail_body_match 'Assigned to group', mail
+        assert_mail_body_match "View all issues (#{mail.bcc.include?('dlopper@somenet.foo') ? 3 : 2} open)", mail
       end
     end
   end

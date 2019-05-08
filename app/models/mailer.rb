@@ -553,6 +553,9 @@ class Mailer < ActionMailer::Base
     @issues_url = url_for(:controller => 'issues', :action => 'index',
                                 :set_filter => 1, :assigned_to_id => 'me',
                                 :sort => 'due_date:asc')
+    query = IssueQuery.new(:name => '_')
+    query.add_filter('assigned_to_id', '=', ['me'])
+    @open_issues_count = query.issue_count
     mail :to => user,
       :subject => l(:mail_subject_reminder, :count => issues.size, :days => days)
   end
@@ -629,10 +632,19 @@ class Mailer < ActionMailer::Base
   def mail(headers={}, &block)
     # Add a display name to the From field if Setting.mail_from does not
     # include it
-    mail_from = Mail::Address.new(Setting.mail_from)
-    if mail_from.display_name.blank? && mail_from.comments.blank?
-      mail_from.display_name =
-        (@author && @author.logged?) ? @author.name : Setting.app_title
+    begin
+      mail_from = Mail::Address.new(Setting.mail_from)
+      if mail_from.display_name.blank? && mail_from.comments.blank?
+        mail_from.display_name =
+          @author&.logged? ? @author.name : Setting.app_title
+      end
+      from = mail_from.format
+      list_id = "<#{mail_from.address.to_s.tr('@', '.')}>"
+    rescue Mail::Field::IncompleteParseError
+       # Use Setting.mail_from as it is if Mail::Address cannot parse it
+       # (probably the emission address is not RFC compliant)
+      from = Setting.mail_from.to_s
+      list_id = "<#{from.tr('@', '.')}>"
     end
 
     headers.reverse_merge! 'X-Mailer' => 'Redmine',
@@ -640,8 +652,8 @@ class Mailer < ActionMailer::Base
             'X-Redmine-Site' => Setting.app_title,
             'X-Auto-Response-Suppress' => 'All',
             'Auto-Submitted' => 'auto-generated',
-            'From' => mail_from.format,
-            'List-Id' => "<#{mail_from.address.to_s.tr('@', '.')}>"
+            'From' => from,
+            'List-Id' => list_id
 
     # Replaces users with their email addresses
     [:to, :cc, :bcc].each do |key|
@@ -653,13 +665,13 @@ class Mailer < ActionMailer::Base
     # Removes the author from the recipients and cc
     # if the author does not want to receive notifications
     # about what the author do
-    if @author && @author.logged? && @author.pref.no_self_notified
+    if @author&.logged? && @author.pref.no_self_notified
       addresses = @author.mails
       headers[:to] -= addresses if headers[:to].is_a?(Array)
       headers[:cc] -= addresses if headers[:cc].is_a?(Array)
     end
 
-    if @author && @author.logged?
+    if @author&.logged?
       redmine_headers 'Sender' => @author.login
     end
 
@@ -761,4 +773,3 @@ class Mailer < ActionMailer::Base
     @references_objects << object
   end
 end
-
