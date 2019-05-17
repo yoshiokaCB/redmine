@@ -10,7 +10,10 @@ spec:
   capacity:
     storage: 30Gi
   accessModes:
+  # 複数のノードによって読み書き可能なマウント
   - ReadWriteMany
   nfs:
+    # nfs(filestore)のマウント先のパスを指定
     path: /vol01
+    # nfs(filestore)のIPアドレス
     server: x.x.x.x(ip)

@@ -15,18 +15,23 @@ spec:
         app: redmine
     spec:
       containers:
-        - image: asia.gcr.io/gcpug-04/redmine_app
+        # Container Registry のイメージ名全体を指定
+        - image: asia.gcr.io/gcpug-04/redmine_app:v1
           name: redmine
+
+          # 以下Dockerを軌道に必要な環境変数
           env:
           - name: RAILS_DB_ADAPTER
             value: mysql2
           - name: RAILS_DB_HOST
+            # 今回はPod内にsqlproxyを起動しているので127.0.0.1を指定
             value: 127.0.0.1
           - name: RAILS_DB
             value: redmine
           - name: RAILS_DB_USERNAME
             value: root
           - name: RAILS_DB_PASSWORD
+            # 暗号化したパスワードを使用
             valueFrom:
               secretKeyRef:
                 name: mysql
@@ -56,6 +61,7 @@ spec:
         # [START proxy_container]
         - name: cloudsql-proxy
           image: gcr.io/cloudsql-docker/gce-proxy:1.11
+          # gcpug-04 はプロジェクトIDを指定
           command: ["/cloud_sql_proxy",
                     "-instances=gcpug-04:asia-northeast1:redmine-mysql=tcp:3306",
                     "-credential_file=/secrets/cloudsql/credentials.json"]

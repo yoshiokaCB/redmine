@@ -4,7 +4,9 @@ metadata:
   name: redmine-volumeclaim
 spec:
   accessModes:
+    # 複数のノードによって読み書き可能なマウント
     - ReadWriteMany
+  # FileStoreに接続するためにnfsを選択
   storageClassName: "nfs"
   resources:
     requests:
