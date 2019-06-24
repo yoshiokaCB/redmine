@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -2328,5 +2328,19 @@ class QueryTest < ActiveSupport::TestCase
 
     query.filters = {'spent_time' => {:operator => '><', :values => ['1', '2']}}
     assert_equal [3], query.issues.pluck(:id)
+  end
+
+  def test_issues_should_be_in_the_same_order_when_paginating
+    q = IssueQuery.new
+    q.sort_criteria = {'0' => ['priority', 'desc']}
+    issue_ids = q.issues.pluck(:id)
+    paginated_issue_ids = []
+    # Test with a maximum of 2 records per page.
+    ((q.issue_count / 2) + 1).times do |i|
+      paginated_issue_ids += q.issues(:offset => (i * 2), :limit => 2).pluck(:id)
+    end
+
+    # Non-paginated issue ids and paginated issue ids should be in the same order.
+    assert_equal issue_ids, paginated_issue_ids
   end
 end

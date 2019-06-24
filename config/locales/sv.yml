@@ -241,7 +241,7 @@ sv:
   error_issue_done_ratios_not_updated: "% klart inte uppdaterade."
   error_workflow_copy_source: 'Vänligen välj källans ärendetyp eller roll'
   error_workflow_copy_target: 'Vänligen välj ärendetyp(er) och roll(er) för mål'
-  error_unable_delete_issue_status: 'Ärendestatus kunde inte tas bort'
+  error_unable_delete_issue_status: 'Ärendestatus kunde inte tas bort (%{value})'
   error_unable_to_connect: "Kan inte ansluta (%{value})"
   error_attachment_too_big: "Denna fil kan inte laddas upp eftersom den överstiger maximalt tillåten filstorlek (%{max_size})"
   error_session_expired: "Din session har gått ut. Vänligen logga in på nytt."
@@ -576,7 +576,6 @@ sv:
   label_enumeration_new: Nytt värde
   label_information: Information
   label_information_plural: Information
-  label_please_login: Var god logga in
   label_register: Registrera
   label_login_with_open_id_option: eller logga in med OpenID
   label_password_lost: Glömt lösenord
@@ -1038,6 +1037,7 @@ sv:
   text_assign_time_entries_to_project: Tilldela rapporterade timmar till projektet
   text_reassign_time_entries: 'Återtilldela rapporterade timmar till detta ärende:'
   text_user_wrote: "%{value} skrev:"
+  text_user_wrote_in: "%{value} skrev (%{link}):"
   text_enumeration_destroy_question: "%{count} objekt är tilldelade till detta värde."
   text_enumeration_category_reassign_to: 'Återtilldela till detta värde:'
   text_email_delivery_not_configured: "Mailfunktionen har inte konfigurerats, och notifieringar via mail kan därför inte skickas.\nKonfigurera din SMTP-server i config/configuration.yml och starta om applikationen för att aktivera dem."
@@ -1313,3 +1313,18 @@ sv:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

@@ -194,7 +194,7 @@ sr-YU:
   error_issue_done_ratios_not_updated: "Odnos rešenih problema nije ažuriran."
   error_workflow_copy_source: 'Molimo odaberite izvorno praćenje ili ulogu'
   error_workflow_copy_target: 'Molimo odaberite odredišno praćenje i ulogu'
-  error_unable_delete_issue_status: 'Status problema je nemoguće obrisati'
+  error_unable_delete_issue_status: 'Status problema je nemoguće obrisati (%{value})'
   error_unable_to_connect: "Povezivanje sa (%{value}) je nemoguće"
   warning_attachments_not_saved: "%{count} datoteka ne može biti snimljena."
 
@@ -469,7 +469,6 @@ sr-YU:
   label_enumeration_new: Nova vrednost
   label_information: Informacija
   label_information_plural: Informacije
-  label_please_login: Molimo, prijavite se
   label_register: Registracija
   label_login_with_open_id_option: ili prijava sa OpenID
   label_password_lost: Izgubljena lozinka
@@ -858,6 +857,7 @@ sr-YU:
   text_assign_time_entries_to_project: Dodeli prijavljene sate projektu
   text_reassign_time_entries: 'Dodeli ponovo prijavljene sate ovom problemu:'
   text_user_wrote: "%{value} je napisao:"
+  text_user_wrote_in: "%{value} je napisao (%{link}):"
   text_enumeration_destroy_question: "%{count} objekat(a) je dodeljeno ovoj vrednosti."
   text_enumeration_category_reassign_to: 'Dodeli ih ponovo ovoj vrednosti:'
   text_email_delivery_not_configured: "Isporuka e-poruka nije konfigurisana i obaveštenja su onemogućena.\nPodesite vaš SMTP server u config/configuration.yml i pokrenite ponovo aplikaciju za njihovo omogućavanje."
@@ -1282,3 +1282,18 @@ sr-YU:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

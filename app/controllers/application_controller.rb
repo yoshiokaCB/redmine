@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,14 +20,17 @@
 require 'uri'
 require 'cgi'
 
-class Unauthorized < Exception; end
+class Unauthorized < StandardError; end
 
 class ApplicationController < ActionController::Base
   include Redmine::I18n
   include Redmine::Pagination
   include Redmine::Hook::Helper
   include RoutesHelper
+  include AvatarsHelper
+
   helper :routes
+  helper :avatars
 
   class_attribute :accept_api_auth_actions
   class_attribute :accept_rss_auth_actions
@@ -54,6 +57,7 @@ class ApplicationController < ActionController::Base
   end
 
   before_action :session_expiration, :user_setup, :check_if_login_required, :set_localization, :check_password_change
+  after_action :record_project_usage
 
   rescue_from ::Unauthorized, :with => :deny_access
   rescue_from ::ActionView::MissingTemplate, :with => :missing_template
@@ -398,6 +402,13 @@ class ApplicationController < ActionController::Base
       render_404
       false
     end
+  end
+
+  def record_project_usage
+    if @project && @project.id && User.current.logged? && User.current.allowed_to?(:view_project, @project)
+      Redmine::ProjectJumpBox.new(User.current).project_used(@project)
+    end
+    true
   end
 
   def back_url

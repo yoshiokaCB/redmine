@@ -197,7 +197,7 @@ he:
   error_issue_done_ratios_not_updated: אחוז התקדמות לנושא לא עודכן.
   error_workflow_copy_source: נא בחר סיווג או תפקיד מקור
   error_workflow_copy_target: נא בחר תפקיד(ים) וסיווג(ים)
-  error_unable_delete_issue_status: לא ניתן למחוק מצב נושא
+  error_unable_delete_issue_status: לא ניתן למחוק מצב נושא (%{value})
   error_unable_to_connect: לא ניתן להתחבר (%{value})
   warning_attachments_not_saved: "כשלון בשמירת %{count} קבצים."
 
@@ -477,7 +477,6 @@ he:
   label_enumeration_new: ערך חדש
   label_information: מידע
   label_information_plural: מידע
-  label_please_login: נא התחבר
   label_register: הרשמה
   label_login_with_open_id_option: או התחבר באמצעות OpenID
   label_password_lost: אבדה הסיסמה?
@@ -868,6 +867,7 @@ he:
   text_assign_time_entries_to_project: הצב שעות שדווחו לפרויקט הזה
   text_reassign_time_entries: 'הצב מחדש שעות שדווחו לפרויקט הזה:'
   text_user_wrote: "%{value} כתב:"
+  text_user_wrote_in: "%{value} כתב (%{link}):"
   text_enumeration_destroy_question: "%{count} אוביקטים מוצבים לערך זה."
   text_enumeration_category_reassign_to: 'הצב מחדש לערך הזה:'
   text_email_delivery_not_configured: 'לא נקבעה תצורה לשליחת דואר, וההתראות כבויות.\nקבע את תצורת שרת ה־SMTP בקובץ /etc/redmine/&lt;instance&gt;/configuration.yml והתחל את האפליקציה מחדש ע"מ לאפשר אותם.'
@@ -1285,3 +1285,18 @@ he:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

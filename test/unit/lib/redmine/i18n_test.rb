@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -70,7 +70,7 @@ class Redmine::I18nTest < ActiveSupport::TestCase
         end
         assert l('date.day_names').is_a?(Array)
         assert_equal 7, l('date.day_names').size
-  
+
         assert l('date.month_names').is_a?(Array)
         assert_equal 13, l('date.month_names').size
       end

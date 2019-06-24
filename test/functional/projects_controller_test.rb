@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -1000,21 +1000,42 @@ class ProjectsControllerTest < Redmine::ControllerTest
     assert_select_error /Identifier cannot be blank/
   end
 
-  def test_jump_without_project_id_should_redirect_to_active_tab
+  def test_bookmark_should_create_bookmark
+    @request.session[:user_id] = 3
+    post :bookmark, params: { id: 'ecookbook' }
+    assert_redirected_to controller: 'projects', action: 'show', id: 'ecookbook'
+    jb = Redmine::ProjectJumpBox.new(User.find(3))
+    assert jb.bookmark?(Project.find('ecookbook'))
+    refute jb.bookmark?(Project.find('onlinestore'))
+  end
+
+  def test_bookmark_should_delete_bookmark
+    @request.session[:user_id] = 3
+    jb = Redmine::ProjectJumpBox.new(User.find(3))
+    project = Project.find('ecookbook')
+    jb.bookmark_project project
+    delete :bookmark, params: { id: 'ecookbook' }
+    assert_redirected_to controller: 'projects', action: 'show', id: 'ecookbook'
+
+    jb = Redmine::ProjectJumpBox.new(User.find(3))
+    refute jb.bookmark?(Project.find('ecookbook'))
+  end
+
+  def test_index_jump_without_project_id_should_redirect_to_active_tab
     get :index, :params => {
         :jump => 'issues'
       }
     assert_redirected_to '/issues'
   end
 
-  def test_jump_should_not_redirect_to_unknown_tab
+  def test_index_jump_should_not_redirect_to_unknown_tab
     get :index, :params => {
         :jump => 'foobar'
       }
     assert_response :success
   end
 
-  def test_jump_should_redirect_to_active_tab
+  def test_show_jump_should_redirect_to_active_tab
     get :show, :params => {
         :id => 1,
         :jump => 'issues'
@@ -1022,7 +1043,7 @@ class ProjectsControllerTest < Redmine::ControllerTest
     assert_redirected_to '/projects/ecookbook/issues'
   end
 
-  def test_jump_should_not_redirect_to_inactive_tab
+  def test_show_jump_should_not_redirect_to_inactive_tab
     get :show, :params => {
         :id => 3,
         :jump => 'documents'
@@ -1030,7 +1051,7 @@ class ProjectsControllerTest < Redmine::ControllerTest
     assert_response :success
   end
 
-  def test_jump_should_not_redirect_to_unknown_tab
+  def test_show_jump_should_not_redirect_to_unknown_tab
     get :show, :params => {
         :id => 3,
         :jump => 'foobar'

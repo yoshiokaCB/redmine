@@ -355,7 +355,6 @@ sk:
   label_enumeration_new: Nová hodnota
   label_information: Informácia
   label_information_plural: Informácie
-  label_please_login: Prihláste sa prosím
   label_register: Registrácia
   label_password_lost: Zabudnuté heslo
   label_home: Domov
@@ -705,6 +704,7 @@ sk:
   mail_body_reminder: "Nasledovné úlohy (%{count}), ktoré sú vám priradené, majú byť hotové za %{days} dní:"
   mail_subject_reminder: "%{count} úlohy majú byť hotové za %{days} dní"
   text_user_wrote: "Používateľ %{value} napísal:"
+  text_user_wrote_in: "Používateľ %{value} napísal (%{link}):"
   label_duplicated_by: Duplikoval
   setting_enabled_scm: Povolené SCM
   text_enumeration_category_reassign_to: 'Prenastaviť na túto hodnotu:'
@@ -875,7 +875,7 @@ sk:
   permission_export_wiki_pages: Export wikistránok
   setting_cache_formatted_text: Uložiť formátovaný text do vyrovnávacej pamäte
   permission_manage_project_activities: Správa aktivít projektu
-  error_unable_delete_issue_status: 'Nie je možné vymazať stav úlohy'
+  error_unable_delete_issue_status: 'Nie je možné vymazať stav úlohy (%{value})'
   label_profile: Profil
   permission_manage_subtasks: Správa podúloh
   field_parent_issue: Nadradená úloha
@@ -1269,3 +1269,18 @@ sk:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

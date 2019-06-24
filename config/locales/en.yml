@@ -204,7 +204,7 @@ en:
   error_issue_done_ratios_not_updated: "Issue done ratios not updated."
   error_workflow_copy_source: 'Please select a source tracker or role'
   error_workflow_copy_target: 'Please select target tracker(s) and role(s)'
-  error_unable_delete_issue_status: 'Unable to delete issue status'
+  error_unable_delete_issue_status: 'Unable to delete issue status (%{value})'
   error_unable_to_connect: "Unable to connect (%{value})"
   error_attachment_too_big: "This file cannot be uploaded because it exceeds the maximum allowed file size (%{max_size})"
   error_session_expired: "Your session has expired. Please login again."
@@ -382,6 +382,9 @@ en:
   field_full_width_layout: Full width layout
   field_digest: Checksum
   field_default_assigned_to: Default assignee
+  field_recently_used_projects: Number of recently used projects in jump box
+  field_history_default_tab: Issue's history default tab
+  field_unique_id: Unique ID
 
   setting_app_title: Application title
   setting_welcome_text: Welcome text
@@ -447,6 +450,7 @@ en:
   setting_commit_logtime_enabled: Enable time logging
   setting_commit_logtime_activity_id: Activity for logged time
   setting_gantt_items_limit: Maximum number of items displayed on the gantt chart
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
   setting_issue_group_assignment: Allow issue assignment to groups
   setting_default_issue_start_date_to_creation_date: Use current date as start date for new issues
   setting_commit_cross_project_ref: Allow issues of all the other projects to be referenced and fixed
@@ -610,7 +614,6 @@ en:
   label_enumeration_new: New value
   label_information: Information
   label_information_plural: Information
-  label_please_login: Please log in
   label_register: Register
   label_login_with_open_id_option: or login with OpenID
   label_password_lost: Lost password
@@ -949,6 +952,7 @@ en:
   label_profile: Profile
   label_subtask_plural: Subtasks
   label_project_copy_notifications: Send email notifications during the project copy
+  label_import_notifications: Send email notifications during the import
   label_principal_search: "Search for user or group:"
   label_user_search: "Search for user:"
   label_additional_workflow_transitions_for_author: Additional transitions allowed when the user is the author
@@ -1021,6 +1025,7 @@ en:
   label_member_management_all_roles: All roles
   label_member_management_selected_roles_only: Only these roles
   label_import_issues: Import issues
+  label_import_time_entries: Import time entries
   label_select_file_to_import: Select the file to import
   label_fields_separator: Field separator
   label_fields_wrapper: Field wrapper
@@ -1042,6 +1047,9 @@ en:
   label_font_default: Default font
   label_font_monospace: Monospaced font
   label_font_proportional: Proportional font
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
   label_last_notes: Last notes
   label_nothing_to_preview: Nothing to preview
   label_inherited_from_parent_project: "Inherited from parent project"
@@ -1050,6 +1058,9 @@ en:
   label_open_trackers_description: View all trackers description
   label_preferred_body_part_text: Text
   label_preferred_body_part_html: HTML (experimental)
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
 
   button_login: Login
   button_submit: Submit
@@ -1104,6 +1115,8 @@ en:
   button_close: Close
   button_reopen: Reopen
   button_import: Import
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
   button_filter: Filter
   button_actions: Actions
 
@@ -1167,11 +1180,13 @@ en:
   text_plugin_assets_writable: Plugin assets directory writable
   text_rmagick_available: RMagick available (optional)
   text_convert_available: ImageMagick convert available (optional)
+  text_gs_available: ImageMagick PDF support available (optional)
   text_destroy_time_entries_question: "%{hours} hours were reported on the issues you are about to delete. What do you want to do?"
   text_destroy_time_entries: Delete reported hours
   text_assign_time_entries_to_project: Assign reported hours to the project
   text_reassign_time_entries: 'Reassign reported hours to this issue:'
   text_user_wrote: "%{value} wrote:"
+  text_user_wrote_in: "%{value} wrote in %{link}:"
   text_enumeration_destroy_question: "%{count} objects are assigned to the value “%{name}”."
   text_enumeration_category_reassign_to: 'Reassign them to this value:'
   text_email_delivery_not_configured: "Email delivery is not configured, and notifications are disabled.\nConfigure your SMTP server in config/configuration.yml and restart the application to enable them."

@@ -417,7 +417,6 @@ vi:
   label_enumeration_new: Thêm giá trị
   label_information: Thông tin
   label_information_plural: Thông tin
-  label_please_login: Vui lòng đăng nhập
   label_register: Đăng ký
   label_password_lost: Phục hồi mật mã
   label_home: Trang chính
@@ -745,6 +744,7 @@ vi:
   text_assign_time_entries_to_project: Gán thời gian báo cáo cho dự án
   text_reassign_time_entries: 'Gán lại thời gian báo cáo cho Vấn đề này:'
   text_user_wrote: "%{value} đã viết:"
+  text_user_wrote_in: "%{value} đã viết (%{link}):"
   text_enumeration_destroy_question: "%{count} đối tượng được gán giá trị này."
   text_enumeration_category_reassign_to: 'Gán lại giá trị này:'
   text_email_delivery_not_configured: "Cấu hình gửi Email chưa được đặt, và chức năng thông báo bị loại bỏ.\nCấu hình máy chủ SMTP của bạn ở file config/configuration.yml và khởi động lại để kích hoạt chúng."
@@ -932,7 +932,7 @@ vi:
   permission_export_wiki_pages: Xuất trang wiki
   setting_cache_formatted_text: Cache định dạng các ký tự
   permission_manage_project_activities: Quản lý hoạt động của dự án
-  error_unable_delete_issue_status: Không thể xóa trạng thái vấn đề
+  error_unable_delete_issue_status: Không thể xóa trạng thái vấn đề (%{value})
   label_profile: Hồ sơ
   permission_manage_subtasks: Quản lý tác vụ con
   field_parent_issue: Tác vụ cha
@@ -1332,3 +1332,18 @@ vi:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

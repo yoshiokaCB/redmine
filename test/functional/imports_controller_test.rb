@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -44,7 +44,7 @@ class ImportsControllerTest < Redmine::ControllerTest
   end
 
   def test_new_should_display_the_upload_form
-    get :new
+    get :new, :params => { :type => 'IssueImport' }
     assert_response :success
     assert_select 'input[name=?]', 'file'
   end
@@ -52,6 +52,7 @@ class ImportsControllerTest < Redmine::ControllerTest
   def test_create_should_save_the_file
     import = new_record(Import) do
       post :create, :params => {
+          :type => 'IssueImport',
           :file => uploaded_test_file('import_issues.csv', 'text/csv')
         }
       assert_response 302
@@ -174,7 +175,7 @@ class ImportsControllerTest < Redmine::ControllerTest
           :mapping => {
             :project_id => '1',
             :tracker_id => '2',
-          :subject => '0'}    
+          :subject => '0'}
         }
       }
     assert_redirected_to "/imports/#{import.to_param}/run"
@@ -185,7 +186,7 @@ class ImportsControllerTest < Redmine::ControllerTest
     assert_equal '2', mapping['tracker_id']
     assert_equal '0', mapping['subject']
   end
- 
+
   def test_get_run
     import = generate_import_with_mapping
 
@@ -195,7 +196,7 @@ class ImportsControllerTest < Redmine::ControllerTest
     assert_response :success
     assert_select '#import-progress'
   end
- 
+
   def test_post_run_should_import_the_file
     import = generate_import_with_mapping
 
@@ -234,6 +235,44 @@ class ImportsControllerTest < Redmine::ControllerTest
 
     issues = Issue.order(:id => :desc).limit(3).to_a
     assert_equal ["Child of existing issue", "Child 1", "First"], issues.map(&:subject)
+  end
+
+  def test_post_run_with_notifications
+    import = generate_import
+
+    post :settings, :params => {
+        :id => import,
+        :import_settings => {
+          :separator => ';',
+          :wrapper => '"',
+          :encoding => 'ISO-8859-1',
+          :notifications => '1',
+          :mapping => {
+            :project_id => '1',
+            :tracker => '13',
+            :subject => '1',
+            :assigned_to => '11',
+          },
+        },
+      }
+
+    ActionMailer::Base.deliveries.clear
+    assert_difference 'Issue.count', 3 do
+      post :run, :params => {
+          :id => import,
+        }
+      assert_response :found
+    end
+    actual_email_count = ActionMailer::Base.deliveries.size
+    assert_not_equal 0, actual_email_count
+
+    import.reload
+    issue_ids = import.items.collect(&:obj_id)
+    expected_email_count =
+      Issue.where(:id => issue_ids).inject(0) do |sum, issue|
+        sum + (issue.notified_users | issue.notified_watchers).size
+      end
+    assert_equal expected_email_count, actual_email_count
   end
 
   def test_show_without_errors

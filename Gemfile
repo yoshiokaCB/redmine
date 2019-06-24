@@ -3,14 +3,14 @@ source 'https://rubygems.org'
 gem "bundler", ">= 1.5.0"
 
 gem "rails", "5.2.3"
-gem "rouge", "~> 3.3.0"
+gem "rouge", "~> 3.4.1"
 gem "request_store", "1.0.5"
 gem "mini_mime", "~> 1.0.1"
 gem "actionpack-xml_parser"
 gem "roadie-rails", "~> 1.3.0"
 gem "mimemagic"
 gem "mail", "~> 2.7.1"
-gem "csv", "~> 3.0.1" if RUBY_VERSION < "2.6"
+gem "csv", "~> 3.1.1"
 gem "nokogiri", "~> 1.10.0"
 gem "i18n", "~> 1.6.0"
 gem "rbpdf", "~> 1.19.6"
@@ -29,16 +29,14 @@ group :openid do
   gem "rack-openid"
 end
 
-platforms :mri, :mingw, :x64_mingw do
-  # Optional gem for exporting the gantt to a PNG file, not supported with jruby
-  group :rmagick do
-    gem "rmagick", "~> 2.16.0"
-  end
+# Optional gem for exporting the gantt to a PNG file, not supported with jruby
+group :rmagick do
+  gem "rmagick", "~> 2.16.0"
+end
 
-  # Optional Markdown support, not for JRuby
-  group :markdown do
-    gem "redcarpet", "~> 3.4.0"
-  end
+# Optional Markdown support, not for JRuby
+group :markdown do
+  gem "redcarpet", "~> 3.4.0"
 end
 
 # Include database gems for the adapters found in the database
@@ -80,10 +78,13 @@ group :test do
   gem "rails-dom-testing"
   gem "mocha"
   gem "simplecov", "~> 0.16.1", :require => false
+  gem "ffi", platforms: [:mingw, :x64_mingw, :mswin]
   # For running system tests
   gem 'puma', '~> 3.7'
   gem "capybara", '~> 2.13'
   gem "selenium-webdriver"
+  # RuboCop
+  gem 'rubocop', '~> 0.71.0'
 end
 
 local_gemfile = File.join(File.dirname(__FILE__), "Gemfile.local")

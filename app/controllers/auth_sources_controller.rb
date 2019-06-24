@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -60,7 +60,7 @@ class AuthSourcesController < ApplicationController
     begin
       @auth_source.test_connection
       flash[:notice] = l(:notice_successful_connection)
-    rescue Exception => e
+    rescue => e
       flash[:error] = l(:error_unable_to_connect, e.message)
     end
     redirect_to auth_sources_path

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -193,5 +193,16 @@ module CustomFieldsHelper
       select_options << [l(:label_radio_buttons), 'radio']
     end
     form.select :edit_tag_style, select_options, :label => :label_display
+  end
+
+  def select_type_radio_buttons(default_type)
+    if CUSTOM_FIELDS_TABS.none? {|tab| tab[:name] == default_type}
+      default_type = 'IssueCustomField'
+    end
+    custom_field_type_options.map do |name, type|
+      content_tag(:label, :style => 'display:block;') do
+        radio_button_tag('type', type, type == default_type) + name
+      end
+    end.join("\n").html_safe
   end
 end

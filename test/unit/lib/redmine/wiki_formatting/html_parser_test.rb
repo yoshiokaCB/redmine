@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -33,5 +33,17 @@ class Redmine::WikiFormatting::HtmlParserTest < ActiveSupport::TestCase
   def test_should_remove_style_tags_from_body
     assert_equal "Text",
       @parser.to_text('<html><body><style>body {font-size: 0.8em;}</style>Text</body></html>')
+  end
+
+  def test_should_remove_preceding_whitespaces
+    to_test = {
+      "<div>  blocks with</div>\n<p>\n  preceding whitespaces\n</p>" => "blocks with\n\npreceding whitespaces",
+      "<div>blocks without</div>\n<p>\npreceding whitespaces\n</p>" => "blocks without\n\npreceding whitespaces",
+      "<span>  span with</span>\n<span>  preceding whitespaces</span>" => "span with preceding whitespaces",
+      "<span>span without</span>\n<span>preceding whitespaces</span>" => "span without preceding whitespaces"
+    }
+    to_test.each do |html, expected|
+      assert_equal expected, @parser.to_text(html)
+    end
   end
 end

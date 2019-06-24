@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-class ScmFetchError < Exception; end
+class ScmFetchError < StandardError; end
 
 class Repository < ActiveRecord::Base
   include Redmine::Ciphering
@@ -382,7 +382,7 @@ class Repository < ActiveRecord::Base
     ret = ""
     begin
       ret = self.scm_adapter_class.client_command if self.scm_adapter_class
-    rescue Exception => e
+    rescue => e
       logger.error "scm: error during get command: #{e.message}"
     end
     ret
@@ -392,7 +392,7 @@ class Repository < ActiveRecord::Base
     ret = ""
     begin
       ret = self.scm_adapter_class.client_version_string if self.scm_adapter_class
-    rescue Exception => e
+    rescue => e
       logger.error "scm: error during get version string: #{e.message}"
     end
     ret
@@ -402,7 +402,7 @@ class Repository < ActiveRecord::Base
     ret = false
     begin
       ret = self.scm_adapter_class.client_available if self.scm_adapter_class
-    rescue Exception => e
+    rescue => e
       logger.error "scm: error during get scm available: #{e.message}"
     end
     ret

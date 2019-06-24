@@ -215,7 +215,7 @@ et:
   error_issue_done_ratios_not_updated: "Teema edenemise astmed jäid uuendamata."
   error_workflow_copy_source: "Palun vali algne valdkond või roll"
   error_workflow_copy_target: "Palun vali sihtvaldkon(na)d või -roll(id)"
-  error_unable_delete_issue_status: "Oleku kustutamine ei õnnestunud"
+  error_unable_delete_issue_status: "Oleku kustutamine ei õnnestunud (%{value})"
   error_unable_to_connect: "Ühenduse loomine ei õnnestunud (%{value})"
   error_attachment_too_big: "Faili ei saa üles laadida, sest see on lubatust (%{max_size}) mahukam"
   warning_attachments_not_saved: "%{count} faili salvestamine ei õnnestunud."
@@ -528,7 +528,6 @@ et:
   label_enumeration_new: "Lisa"
   label_information: "Teave"
   label_information_plural: "Teave"
-  label_please_login: "Palun logi sisse"
   label_register: "Registreeru"
   label_login_with_open_id_option: "või logi sisse OpenID-ga"
   label_password_lost: "Kui parool on ununud..."
@@ -955,6 +954,7 @@ et:
   text_assign_time_entries_to_project: "Vii tunnid üle teise projekti"
   text_reassign_time_entries: "Määra tunnid sellele teemale:"
   text_user_wrote: "%{value} kirjutas:"
+  text_user_wrote_in: "%{value} kirjutas (%{link}):"
   text_enumeration_destroy_question: "Selle väärtusega on seotud %{count} objekt(i)."
   text_enumeration_category_reassign_to: "Seo nad teise väärtuse külge:"
   text_email_delivery_not_configured: "E-kirjade saatmine ei ole seadistatud ja teavitusi ei saadeta.\nKonfigureeri oma SMTP server failis config/configuration.yml ja taaskäivita Redmine."
@@ -1285,3 +1285,18 @@ et:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

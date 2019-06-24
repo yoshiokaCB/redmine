@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -33,7 +33,7 @@ class JournalsHelperTest < Redmine::HelperTest
 
   def test_journal_thumbnail_attachments_should_return_thumbnailable_attachments
     issue = Issue.generate!
-    
+
     journal = new_record(Journal) do
       issue.init_journal(User.find(1))
       issue.attachments << Attachment.new(:file => mock_file_with_options(:original_filename => 'image.png'), :author => User.find(1))

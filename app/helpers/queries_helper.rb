@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -171,10 +171,10 @@ module QueriesHelper
       css, order = nil, column.default_order
       if column.name.to_s == query.sort_criteria.first_key
         if query.sort_criteria.first_asc?
-          css = 'sort asc'
+          css = 'sort asc icon icon-sorted-desc'
           order = 'desc'
         else
-          css = 'sort desc'
+          css = 'sort desc icon icon-sorted-asc'
           order = 'asc'
         end
       end

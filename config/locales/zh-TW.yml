@@ -288,7 +288,7 @@
   error_issue_done_ratios_not_updated: "議題完成百分比未更新。"
   error_workflow_copy_source: '請選擇一個來源議題追蹤標籤或角色'
   error_workflow_copy_target: '請選擇一個（或多個）目的議題追蹤標籤或角色'
-  error_unable_delete_issue_status: '無法刪除議題狀態'
+  error_unable_delete_issue_status: '無法刪除議題狀態 (%{value})'
   error_unable_to_connect: "無法連線至（%{value}）"
   error_attachment_too_big: "這個檔案無法被上傳，因為它已經超過最大的檔案大小 (%{max_size})"
   error_session_expired: "您的工作階段已經過期。請重新登入。"
@@ -683,7 +683,6 @@
   label_enumeration_new: 建立新列舉值
   label_information: 資訊
   label_information_plural: 資訊
-  label_please_login: 請先登入
   label_register: 註冊
   label_login_with_open_id_option: 或使用 OpenID 登入
   label_password_lost: 遺失密碼
@@ -1225,6 +1224,7 @@
   text_assign_time_entries_to_project: 指定已報工的時數至專案中
   text_reassign_time_entries: '重新指定已報工的時數至此議題：'
   text_user_wrote: "%{value} 先前提到:"
+  text_user_wrote_in: "%{value} 先前在 %{link} 中提到:"
   text_enumeration_destroy_question: "目前有 %{count} 個物件使用此列舉值。"
   text_enumeration_category_reassign_to: '重新設定其列舉值為：'
   text_email_delivery_not_configured: "您尚未設定電子郵件傳送方式，因此提醒選項已被停用。\n請在 config/configuration.yml 中設定 SMTP 之後，重新啟動 Redmine，以啟用電子郵件提醒選項。"
@@ -1335,4 +1335,19 @@
   permission_edit_own_issues: 編輯自己的議題
   text_select_apply_tracker: 選擇追蹤標籤
   label_updated_issues: 已更新之議題
-  text_avatar_server_config_html: 目前使用的大頭像(虛擬人偶)伺服器是 <a href="%{url}">%{url}</a>。 您可在 config/configuration.yml 進行設定。
+  text_avatar_server_config_html: 目前使用的大頭像(虛擬人偶)伺服器是 <a href="%{url}">%{url}</a>。 您可於 config/configuration.yml 中進行設定。
+  setting_gantt_months_limit: 甘特圖中月份顯示數量的最大值
+  label_import_time_entries: 匯入工時項目紀錄
+  label_import_notifications: 匯入過程中傳送通知郵件
+  text_gs_available: 可使用 ImageMagick 轉換 PDF 格式 (選配)
+  field_recently_used_projects: 跳轉下拉方塊中最近用過的專案數目
+  label_optgroup_bookmarks: 書籤
+  label_optgroup_others: 其他專案
+  label_optgroup_recents: 最近用過的
+  button_project_bookmark: 新增書籤
+  button_project_bookmark_delete: 移除書籤
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

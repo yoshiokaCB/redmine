@@ -457,7 +457,6 @@ mn:
   label_enumeration_new: Шинэ утга
   label_information: Мэдээлэл
   label_information_plural: Мэдээллүүд
-  label_please_login: Нэвтэрч орно уу
   label_register: Бүртгүүлэх
   label_login_with_open_id_option: or login with OpenID
   label_password_lost: Нууц үгээ алдсан
@@ -842,6 +841,7 @@ mn:
   text_assign_time_entries_to_project: Мэдэгдсэн асуудлуудыг төсөлд оноох
   text_reassign_time_entries: 'Мэдэгдсэн асуудлуудыг энэ асуудалд дахин оноо:'
   text_user_wrote: "%{value} бичихдээ:"
+  text_user_wrote_in: "%{value} бичихдээ (%{link}):"
   text_enumeration_destroy_question: "Энэ утгад %{count} обьект оноогдсон байна."
   text_enumeration_category_reassign_to: 'Тэдгээрийг энэ утгад дахин оноо:'
   text_email_delivery_not_configured: "Имэйлийн тохиргоог хараахан тохируулаагүй байна, тиймээс имэйл мэдэгдэл явуулах боломжгүй байна.\nSMTP сервэрээ config/configuration.yml файл дотор тохируулаад төслийн менежерээ дахиад эхлүүлээрэй."
@@ -884,7 +884,7 @@ mn:
   permission_manage_subtasks: Manage subtasks
   label_profile: Profile
   field_parent_issue: Parent task
-  error_unable_delete_issue_status: Unable to delete issue status
+  error_unable_delete_issue_status: Unable to delete issue status (%{value})
   label_subtask_plural: Subtasks
   label_project_copy_notifications: Send email notifications during the project copy
   error_can_not_delete_custom_field: Unable to delete custom field
@@ -1280,3 +1280,18 @@ mn:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

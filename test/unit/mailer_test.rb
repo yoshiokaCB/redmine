@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,6 +26,7 @@ class MailerTest < ActiveSupport::TestCase
            :member_roles, :roles, :documents, :attachments, :news,
            :tokens, :journals, :journal_details, :changesets,
            :trackers, :projects_trackers,
+           :custom_fields, :custom_fields_trackers,
            :issue_statuses, :enumerations, :messages, :boards, :repositories,
            :wikis, :wiki_pages, :wiki_contents, :wiki_content_versions,
            :versions,
@@ -550,6 +551,27 @@ class MailerTest < ActiveSupport::TestCase
     end
   end
 
+  def test_issue_should_send_email_notification_with_suppress_empty_fields
+    ActionMailer::Base.deliveries.clear
+    with_settings :notified_events => %w(issue_added) do
+      cf = IssueCustomField.generate!
+      issue = Issue.generate!
+      Mailer.deliver_issue_add(issue)
+
+      assert_not_equal 0, ActionMailer::Base.deliveries.size
+
+      mail = last_email
+      assert_mail_body_match /^\* Author: /, mail
+      assert_mail_body_match /^\* Status: /, mail
+      assert_mail_body_match /^\* Priority: /, mail
+
+      assert_mail_body_no_match /^\* Assignee: /, mail
+      assert_mail_body_no_match /^\* Category: /, mail
+      assert_mail_body_no_match /^\* Target version: /, mail
+      assert_mail_body_no_match /^\* #{cf.name}: /, mail
+    end
+  end
+
   def test_version_file_added
     attachements = [ Attachment.find_by_container_type('Version') ]
     assert Mailer.deliver_attachments_added(attachements)
@@ -620,11 +642,12 @@ class MailerTest < ActiveSupport::TestCase
   end
 
   def test_reminders
+    users(:users_003).pref.update_attribute :time_zone, 'UTC' # dlopper
     Mailer.reminders(:days => 42)
     assert_equal 1, ActionMailer::Base.deliveries.size
     mail = last_email
     assert mail.bcc.include?('dlopper@somenet.foo')
-    assert_mail_body_match 'Bug #3: Error 281 when updating a recipe', mail
+    assert_mail_body_match 'Bug #3: Error 281 when updating a recipe (5 days late)', mail
     assert_mail_body_match 'View all issues (2 open)', mail
     assert_select_email do
       assert_select 'a[href=?]',
@@ -639,11 +662,12 @@ class MailerTest < ActiveSupport::TestCase
     with_settings :default_language => 'fr' do
       user = User.find(3)
       user.update_attribute :language, ''
+      user.pref.update_attribute :time_zone, 'UTC'
       Mailer.reminders(:days => 42)
       assert_equal 1, ActionMailer::Base.deliveries.size
       mail = last_email
       assert mail.bcc.include?('dlopper@somenet.foo')
-      assert_mail_body_match 'Bug #3: Error 281 when updating a recipe', mail
+      assert_mail_body_match 'Bug #3: Error 281 when updating a recipe (En retard de 5 jours)', mail
       assert_equal "1 demande(s) arrivent à échéance (42)", mail.subject
     end
   end
@@ -665,26 +689,28 @@ class MailerTest < ActiveSupport::TestCase
   end
 
   def test_reminders_for_users
+    users(:users_003).pref.update_attribute :time_zone, 'UTC' # dlopper
     Mailer.reminders(:days => 42, :users => ['5'])
     assert_equal 0, ActionMailer::Base.deliveries.size # No mail for dlopper
     Mailer.reminders(:days => 42, :users => ['3'])
     assert_equal 1, ActionMailer::Base.deliveries.size # No mail for dlopper
     mail = last_email
     assert mail.bcc.include?('dlopper@somenet.foo')
-    assert_mail_body_match 'Bug #3: Error 281 when updating a recipe', mail
+    assert_mail_body_match 'Bug #3: Error 281 when updating a recipe (5 days late)', mail
   end
 
   def test_reminder_should_include_issues_assigned_to_groups
     with_settings :default_language => 'en', :issue_group_assignment => '1' do
       group = Group.generate!
-      user_dlopper = User.find(3)
       Member.create!(:project_id => 1, :principal => group, :role_ids => [1])
-      group.users << User.find(2)
-      group.users << user_dlopper
+      [users(:users_002), users(:users_003)].each do |user| # jsmith, dlopper
+        group.users << user
+        user.pref.update_attribute :time_zone, 'UTC'
+      end
 
       Issue.update_all(:assigned_to_id => nil)
       due_date = 10.days.from_now
-      Issue.update(1, :due_date => due_date, :assigned_to_id => user_dlopper.id)
+      Issue.update(1, :due_date => due_date, :assigned_to_id => 3)
       Issue.update(2, :due_date => due_date, :assigned_to_id => group.id)
       Issue.create!(:project_id => 1, :tracker_id => 1, :status_id => 1,
                       :subject => 'Assigned to group', :assigned_to => group,
@@ -697,7 +723,7 @@ class MailerTest < ActiveSupport::TestCase
       assert_equal %w(dlopper@somenet.foo jsmith@somenet.foo), recipients
       ActionMailer::Base.deliveries.each do |mail|
         assert_mail_body_match '1 issue(s) that are assigned to you are due in the next 7 days::', mail
-        assert_mail_body_match 'Assigned to group', mail
+        assert_mail_body_match 'Assigned to group (Due in 5 days)', mail
         assert_mail_body_match "View all issues (#{mail.bcc.include?('dlopper@somenet.foo') ? 3 : 2} open)", mail
       end
     end
@@ -737,6 +763,7 @@ class MailerTest < ActiveSupport::TestCase
 
   def test_reminders_should_sort_issues_by_due_date
     user = User.find(2)
+    user.pref.update_attribute :time_zone, 'UTC'
     Issue.generate!(:assigned_to => user, :due_date => 2.days.from_now, :subject => 'quux')
     Issue.generate!(:assigned_to => user, :due_date => 0.days.from_now, :subject => 'baz')
     Issue.generate!(:assigned_to => user, :due_date => 1.days.from_now, :subject => 'qux')
@@ -748,11 +775,11 @@ class MailerTest < ActiveSupport::TestCase
     assert_equal 1, ActionMailer::Base.deliveries.size
     assert_select_email do
       assert_select 'li', 5
-      assert_select 'li:nth-child(1)', /foo/
-      assert_select 'li:nth-child(2)', /bar/
-      assert_select 'li:nth-child(3)', /baz/
-      assert_select 'li:nth-child(4)', /qux/
-      assert_select 'li:nth-child(5)', /quux/
+      assert_select 'li:nth-child(1)', /foo \(1 day late\)/
+      assert_select 'li:nth-child(2)', /bar \(1 day late\)/
+      assert_select 'li:nth-child(3)', /baz \(Due in 0 days\)/
+      assert_select 'li:nth-child(4)', /qux \(Due in 1 day\)/
+      assert_select 'li:nth-child(5)', /quux \(Due in 2 days\)/
     end
   end
 
@@ -915,10 +942,10 @@ class MailerTest < ActiveSupport::TestCase
 
   def test_should_raise_delivery_errors_when_raise_delivery_errors_is_true
     mail = Mailer.test_email(User.find(1))
-    mail.delivery_method.stubs(:deliver!).raises(Exception.new("delivery error"))
+    mail.delivery_method.stubs(:deliver!).raises(StandardError.new("delivery error"))
 
     ActionMailer::Base.raise_delivery_errors = true
-    assert_raise Exception, "delivery error" do
+    assert_raise StandardError, "delivery error" do
       mail.deliver
     end
   ensure
@@ -927,7 +954,7 @@ class MailerTest < ActiveSupport::TestCase
 
   def test_should_log_delivery_errors_when_raise_delivery_errors_is_false
     mail = Mailer.test_email(User.find(1))
-    mail.delivery_method.stubs(:deliver!).raises(Exception.new("delivery error"))
+    mail.delivery_method.stubs(:deliver!).raises(StandardError.new("delivery error"))
 
     Rails.logger.expects(:error).with("Email delivery error: delivery error")
     ActionMailer::Base.raise_delivery_errors = false

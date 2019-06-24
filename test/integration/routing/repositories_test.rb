@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -22,7 +22,9 @@ require File.expand_path('../../../test_helper', __FILE__)
 class RoutingRepositoriesTest < Redmine::RoutingTest
 
   def setup
-    @paths = ['path/to/file.c', 'path/to/index.html', 'raw/file.c']
+    @paths = ['path/to/index.html',
+              'path/to/file.c', 'path/to/file.yaml', 'path/to/file.txt',
+              'raw/file.c']
   end
 
   def test_repositories_resources
@@ -53,25 +55,33 @@ class RoutingRepositoriesTest < Redmine::RoutingTest
     should_route 'GET /projects/foo/repository/foo/revisions.atom' => 'repositories#revisions', :id => 'foo', :repository_id => 'foo', :format => 'atom'
 
     should_route 'GET /projects/foo/repository/foo/revisions/2457' => 'repositories#revision', :id => 'foo', :repository_id => 'foo', :rev => '2457'
-    should_route 'GET /projects/foo/repository/foo/revisions/2457/show' => 'repositories#show', :id => 'foo', :repository_id => 'foo', :rev => '2457'
+    should_route 'GET /projects/foo/repository/foo/revisions/2457/show' => 'repositories#show', :id => 'foo', :repository_id => 'foo', :rev => '2457', :format => 'html'
     should_route 'GET /projects/foo/repository/foo/revisions/2457/diff' => 'repositories#diff', :id => 'foo', :repository_id => 'foo', :rev => '2457'
 
-    %w(show diff entry raw annotate).each do |action|
+    %w(show entry raw annotate).each do |action|
       @paths.each do |path|
         should_route "GET /projects/foo/repository/foo/revisions/2457/#{action}/#{path}" => "repositories##{action}",
-          :id => 'foo', :repository_id => 'foo', :rev => '2457', :path => path
+          :id => 'foo', :repository_id => 'foo', :rev => '2457', :path => path, :format => 'html'
       end
+    end
+    @paths.each do |path|
+      should_route "GET /projects/foo/repository/foo/revisions/2457/diff/#{path}" => "repositories#diff",
+        :id => 'foo', :repository_id => 'foo', :rev => '2457', :path => path
     end
   end
 
   def test_repositories_non_revisions_path_with_repository_id
-    should_route 'GET /projects/foo/repository/svn/changes' => 'repositories#changes', :id => 'foo', :repository_id => 'svn'
+    should_route 'GET /projects/foo/repository/svn/changes' => 'repositories#changes', :id => 'foo', :repository_id => 'svn', :format => 'html'
 
-    %w(changes diff browse entry raw annotate).each do |action|
+    %w(changes browse entry raw annotate).each do |action|
       @paths.each do |path|
         should_route "GET /projects/foo/repository/svn/#{action}/#{path}" => "repositories##{action}",
-          :id => 'foo', :repository_id => 'svn', :path => path
+          :id => 'foo', :repository_id => 'svn', :path => path, :format => 'html'
       end
+    end
+    @paths.each do |path|
+      should_route "GET /projects/foo/repository/svn/diff/#{path}" => "repositories#diff",
+        :id => 'foo', :repository_id => 'svn', :path => path
     end
   end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -97,7 +97,7 @@ class Redmine::ApiTest::IssueCategoriesTest < Redmine::ApiTest::Base
     assert_equal '', @response.body
     assert_nil IssueCategory.find_by_id(1)
   end
-    
+
   test "DELETE /issue_categories/:id.xml should reassign issues with :reassign_to_id param" do
     issue_count = Issue.where(:category_id => 1).count
     assert issue_count > 0

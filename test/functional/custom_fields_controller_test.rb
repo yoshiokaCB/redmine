@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -193,7 +193,7 @@ class CustomFieldsControllerTest < Redmine::ControllerTest
         :type => 'IssueCustomField',
         :custom_field => {
           :field_format => 'list'
-        },  
+        },
         :format => 'js'
       },
       :xhr => true
@@ -247,7 +247,7 @@ class CustomFieldsControllerTest < Redmine::ControllerTest
             :field_format => "string",
             :is_for_all => "0",
             :project_ids => ["1", "3", ""]
-            
+
           }
         }
       assert_response 302

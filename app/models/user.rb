@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -544,10 +544,14 @@ class User < Principal
 
   # Returns the day of +time+ according to user's time zone
   def time_to_date(time)
-    if time_zone.nil?
-      time.to_date
+    self.convert_time_to_user_timezone(time).to_date
+  end
+
+  def convert_time_to_user_timezone(time)
+    if self.time_zone
+      time.in_time_zone(self.time_zone)
     else
-      time.in_time_zone(time_zone).to_date
+      time.utc? ? time.localtime : time
     end
   end
 

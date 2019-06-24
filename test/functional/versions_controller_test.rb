@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -98,12 +98,44 @@ class VersionsControllerTest < Redmine::ControllerTest
     end
   end
 
+  def test_index_should_show_issue_assignee
+    with_settings :gravatar_enabled => '1' do
+      Issue.generate!(:project_id => 3, :fixed_version_id => 4, :assigned_to => User.find_by_login('jsmith'))
+      Issue.generate!(:project_id => 3, :fixed_version_id => 4)
+
+      get :index, :params => {:project_id => 3}
+      assert_response :success
+
+      assert_select 'table.related-issues' do
+        assert_select 'tr.issue', :count => 2 do
+          assert_select 'img.gravatar[title=?]', 'Assignee: John Smith', :count => 1
+        end
+      end
+    end
+  end
+
   def test_show
     get :show, :params => {:id => 2}
     assert_response :success
 
     assert_select 'h2', :text => /1.0/
     assert_select 'span[class=?]', 'badge badge-status-locked', :text => 'locked'
+
+    # no issue avatar when gravatar is disabled
+    assert_select 'img.gravatar', :count => 0
+  end
+
+  def test_show_should_show_issue_assignee
+    with_settings :gravatar_enabled => '1' do
+      get :show, :params => {:id => 2}
+      assert_response :success
+
+      assert_select 'table.related-issues' do
+        assert_select 'tr.issue td.assigned_to', :count => 2 do
+          assert_select 'img.gravatar[title=?]', 'Assignee: Dave Lopper', :count => 1
+        end
+      end
+    end
   end
 
   def test_show_issue_calculations_should_take_into_account_only_visible_issues
@@ -151,6 +183,25 @@ class VersionsControllerTest < Redmine::ControllerTest
           assert_select 'option[value=category][selected=selected]'
         end
         assert_select 'a', :text => 'none'
+      end
+    end
+  end
+
+  def test_show_should_round_down_progress_percentages
+    issue = Issue.find(12)
+    issue.estimated_hours = 40
+    issue.save!
+
+    with_settings :default_language => 'en' do
+      get :show, :params => {:id => 2}
+      assert_response :success
+
+      assert_select 'div.version-overview' do
+        assert_select 'table.progress-98' do
+          assert_select 'td[class=closed][title=?]', 'closed: 98%'
+          assert_select 'td[class=done][title=?]', '% Done: 99%'
+        end
+        assert_select 'p[class=percent]', :text => '99%'
       end
     end
   end

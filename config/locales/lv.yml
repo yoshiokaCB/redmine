@@ -451,7 +451,6 @@ lv:
   label_enumeration_new: Jauna vērtība
   label_information: Informācija
   label_information_plural: Informācija
-  label_please_login: Lūdzu pieslēdzieties
   label_register: Reģistrēties
   label_login_with_open_id_option: vai pieslēgties ar OpenID
   label_password_lost: Nozaudēta parole
@@ -836,6 +835,7 @@ lv:
   text_assign_time_entries_to_project: Piešķirt ziņotās stundas projektam
   text_reassign_time_entries: 'Piešķirt ziņotās stundas uzdevumam:'
   text_user_wrote: "%{value} rakstīja:"
+  text_user_wrote_in: "%{value} rakstīja (%{link}):"
   text_enumeration_destroy_question: "%{count} objekti ir piešķirti šai vērtībai."
   text_enumeration_category_reassign_to: 'Piešķirt tos šai vērtībai:'
   text_email_delivery_not_configured: "E-pastu nosūtīšana nav konfigurēta, un ziņojumi ir izslēgti.\nKonfigurējiet savu SMTP serveri datnē config/configuration.yml un pārstartējiet lietotni."
@@ -881,7 +881,7 @@ lv:
   error_unable_to_connect: Unable to connect (%{value})
   error_can_not_remove_role: This role is in use and can not be deleted.
   field_parent_issue: Parent task
-  error_unable_delete_issue_status: Unable to delete issue status
+  error_unable_delete_issue_status: Unable to delete issue status (%{value})
   label_subtask_plural: Apakšuzdevumi
   error_can_not_delete_tracker: This tracker contains issues and cannot be deleted.
   label_project_copy_notifications: Send email notifications during the project copy
@@ -1274,3 +1274,18 @@ lv:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

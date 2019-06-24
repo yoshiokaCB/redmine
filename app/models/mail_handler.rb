@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -53,7 +53,7 @@ class MailHandler < ActionMailer::Base
   # Receives an email and rescues any exception
   def self.safe_receive(*args)
     receive(*args)
-  rescue Exception => e
+  rescue => e
     Rails.logger.error "MailHandler: an unexpected error occurred when receiving email: #{e.message}"
     return false
   end
@@ -203,7 +203,9 @@ class MailHandler < ActionMailer::Base
     end
     issue.description = cleaned_up_text_body
     issue.start_date ||= User.current.today if Setting.default_issue_start_date_to_creation_date?
-    issue.is_private = (handler_options[:issue][:is_private] == '1')
+    if handler_options[:issue][:is_private] == '1'
+      issue.is_private = true
+    end
 
     # add To and Cc as watchers before saving so the watchers can reply to Redmine
     add_watchers(issue)
@@ -272,7 +274,7 @@ class MailHandler < ActionMailer::Base
         add_attachments(reply)
         reply
       else
-        logger&.info "MailHandler: ignoring reply from [#{sender_email}] to a locked topic"
+        logger&.info "MailHandler: ignoring reply from [#{email.from.first}] to a locked topic"
       end
     end
   end
@@ -415,10 +417,36 @@ class MailHandler < ActionMailer::Base
       'due_date' => get_keyword(:due_date, :format => '\d{4}-\d{2}-\d{2}'),
       'estimated_hours' => get_keyword(:estimated_hours),
       'done_ratio' => get_keyword(:done_ratio, :format => '(\d|10)?0'),
+      'is_private' => get_keyword_bool(:is_private),
       'parent_issue_id' => get_keyword(:parent_issue)
     }.delete_if {|k, v| v.blank? }
 
     attrs
+  end
+
+  def get_keyword_bool(attr)
+    true_values = ["1"]
+    false_values = ["0"]
+    locales = [Setting.default_language]
+    if user
+      locales << user.language
+    end
+    locales.select(&:present?).each do |locale|
+      true_values << l("general_text_yes", :default => '', :locale =>  locale)
+      true_values << l("general_text_Yes", :default => '', :locale =>  locale)
+      false_values << l("general_text_no", :default => '', :locale =>  locale)
+      false_values << l("general_text_No", :default => '', :locale =>  locale)
+    end
+    values = (true_values + false_values).select(&:present?)
+    format = Regexp.union values
+    if value = get_keyword(attr, :format => format)
+      if true_values.include?(value)
+        return true
+      elsif false_values.include?(value)
+        return false
+      end
+    end
+    nil
   end
 
   # Returns a Hash of issue custom field values extracted from keywords in the email body
@@ -431,7 +459,7 @@ class MailHandler < ActionMailer::Base
     end
   end
 
-  # Returns the text content of the email. 
+  # Returns the text content of the email.
   # If the value of Setting.mail_handler_preferred_body_part is 'html',
   # it returns text converted from the text/html part of the email.
   # Otherwise, it returns text/plain part.

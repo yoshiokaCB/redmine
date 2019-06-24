@@ -2,6 +2,7 @@
   <% if User.current.allowed_to?(:add_subprojects, @project) %>
     <%= link_to l(:label_subproject_new), new_project_path(:parent_id => @project), :class => 'icon icon-add' %>
   <% end %>
+  <%= bookmark_link @project %>
   <% if User.current.allowed_to?(:close_project, @project) %>
     <% if @project.active? %>
       <%= link_to l(:button_close), close_project_path(@project), :data => {:confirm => l(:text_are_you_sure)}, :method => :post, :class => 'icon icon-lock' %>
@@ -9,6 +10,10 @@
       <%= link_to l(:button_reopen), reopen_project_path(@project), :data => {:confirm => l(:text_are_you_sure)}, :method => :post, :class => 'icon icon-unlock' %>
     <% end %>
   <% end %>
+  <%= link_to_if_authorized l(:label_settings),
+              {:controller => 'projects', :action => 'settings', :id => @project},
+              :class => 'icon icon-settings' if User.current.allowed_to?(:edit_project, @project) %>
+
 </div>
 
 <h2><%=l(:label_overview)%></h2>
@@ -37,7 +42,13 @@
 
   <% if User.current.allowed_to?(:view_issues, @project) %>
   <div class="issues box">
-    <h3 class="icon icon-issue"><%=l(:label_issue_tracking)%></h3>
+    <h3 class="icon icon-issue">
+      <%=l(:label_issue_tracking)%>&nbsp;
+      <%= link_to l(:label_details),
+            project_issues_report_details_path(@project, :detail => 'tracker'),
+            :class => 'icon-only icon-zoom-in',
+            :title => l(:label_details) %>
+    </h3>
     <% if @trackers.present? %>
     <table class="list issue-report">
       <thead>

@@ -265,7 +265,7 @@ de:
   error_scm_not_found: Eintrag und/oder Revision existiert nicht im Repository.
   error_session_expired: Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.
   error_token_expired: "Dieser Link zum Passwort zurücksetzen ist nicht mehr gültig. Bitte versuchen Sie es erneut."
-  error_unable_delete_issue_status: "Der Ticket-Status konnte nicht gelöscht werden."
+  error_unable_delete_issue_status: "Der Ticket-Status konnte nicht gelöscht werden. (%{value})"
   error_unable_to_connect: Fehler beim Verbinden (%{value})
   error_workflow_copy_source: Bitte wählen Sie einen Quell-Tracker und eine Quell-Rolle.
   error_workflow_copy_target: Bitte wählen Sie die Ziel-Tracker und -Rollen.
@@ -392,6 +392,7 @@ de:
   field_warn_on_leaving_unsaved: Vor dem Verlassen einer Seite mit ungesichertem Text im Editor warnen
   field_watcher: Beobachter
   field_default_assigned_to: Standardbearbeiter
+  field_unique_id: Eindeutige ID
 
   general_csv_decimal_separator: ','
   general_csv_encoding: ISO-8859-1
@@ -678,7 +679,6 @@ de:
   label_password_required: Bitte geben Sie Ihr Passwort ein
   label_permissions: Berechtigungen
   label_permissions_report: Berechtigungsübersicht
-  label_please_login: Anmelden
   label_plugins: Plugins
   label_precedes: Vorgänger von
   label_preferences: Präferenzen
@@ -1067,6 +1067,7 @@ de:
   text_caracters_minimum: "Muss mindestens %{count} Zeichen lang sein."
   text_comma_separated: Mehrere Werte erlaubt (durch Komma getrennt).
   text_convert_available: ImageMagick-Konvertierung verfügbar (optional)
+  text_gs_available: ImageMagick PDF-Unterstützung verfügbar (optional)
   text_custom_field_possible_values_info: 'Eine Zeile pro Wert'
   text_default_administrator_account_changed: Administrator-Passwort geändert
   text_destroy_time_entries: Gebuchte Aufwände löschen
@@ -1131,6 +1132,7 @@ de:
   text_unallowed_characters: Nicht erlaubte Zeichen
   text_user_mail_option: "Für nicht ausgewählte Projekte werden Sie nur Benachrichtigungen für Dinge erhalten, die Sie beobachten oder an denen Sie beteiligt sind (z. B. Tickets, deren Autor Sie sind oder die Ihnen zugewiesen sind)."
   text_user_wrote: "%{value} schrieb:"
+  text_user_wrote_in: "%{value} schrieb (%{link}):"
   text_warn_on_leaving_unsaved: Die aktuellen Änderungen gehen verloren, wenn Sie diese Seite verlassen.
   text_wiki_destroy_confirmation: Sind Sie sicher, dass Sie dieses Wiki mit sämtlichem Inhalt löschen möchten?
   text_wiki_page_destroy_children: Lösche alle Unterseiten
@@ -1273,3 +1275,16 @@ de:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab

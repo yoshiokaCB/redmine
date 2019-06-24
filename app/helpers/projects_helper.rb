@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -59,7 +59,7 @@ module ProjectsHelper
   # Renders the projects index
   def render_project_hierarchy(projects)
     render_project_nested_lists(projects) do |project|
-      s = link_to_project(project, {}, :class => "#{project.css_classes} #{User.current.member_of?(project) ? 'icon icon-fav my-project' : nil}")
+      s = link_to_project(project, {}, :class => "#{project.css_classes} #{User.current.member_of?(project) ? 'icon icon-user my-project' : nil}")
       if project.description.present?
         s << content_tag('div', textilizable(project.short_description, :project => project), :class => 'wiki description')
       end
@@ -137,5 +137,25 @@ module ProjectsHelper
         api.enabled_module(:id => enabled_module.id, :name => enabled_module.name)
       end
     end if include_in_api_response?('enabled_modules')
+  end
+
+  def bookmark_link(project, user = User.current)
+    return '' unless user && user.logged?
+    @jump_box ||= Redmine::ProjectJumpBox.new user
+    bookmarked = @jump_box.bookmark?(project)
+    css = +"icon bookmark "
+
+    if bookmarked
+      css << "icon-bookmark"
+      method = "delete"
+      text = l(:button_project_bookmark_delete)
+    else
+      css << "icon-bookmark-off"
+      method = "post"
+      text = l(:button_project_bookmark)
+    end
+
+    url = bookmark_project_url(project)
+    link_to text, url, remote: true, method: method, class: css
   end
 end

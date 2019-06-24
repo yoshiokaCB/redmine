@@ -208,7 +208,7 @@ lt:
   error_issue_done_ratios_not_updated: "Įrašo baigtumo rodikliai nebuvo atnaujinti. "
   error_workflow_copy_source: 'Prašome pasirinkti pirminį seklį arba rolę, kurį norite kopijuoti'
   error_workflow_copy_target: 'Prašome pasirinkti seklį(-ius) arba rolę(-s) į kuriuos norite kopijuoti'
-  error_unable_delete_issue_status: 'Negalima ištrinti darbo statuso'
+  error_unable_delete_issue_status: 'Negalima ištrinti darbo statuso (%{value})'
   error_unable_to_connect: "Negalima prisijungti (%{value})"
   error_attachment_too_big: "Šis failas negali būti įkeltas, nes viršija maksimalų (%{max_size}) leistiną failo dydį"
   error_session_expired: "Jūsų sesija pasibaigė. Prašome prisijunti iš naujo."
@@ -578,7 +578,6 @@ lt:
   label_enumeration_new: Nauja vertė
   label_information: Informacija
   label_information_plural: Informacija
-  label_please_login: Prašom prisijungti
   label_register: Užsiregistruoti
   label_login_with_open_id_option: arba prisijunkite su OpenID
   label_password_lost: Prarastas slaptažodis
@@ -1103,6 +1102,7 @@ lt:
   text_assign_time_entries_to_project: Priskirti įrašytas valandas prie projekto
   text_reassign_time_entries: 'Priskirti įrašytas valandas šiam darbui:'
   text_user_wrote: "%{value} parašė:"
+  text_user_wrote_in: "%{value} parašė (%{link}):"
   text_enumeration_destroy_question: "%{count} objektai(ų) priskirti šiai reikšmei “%{name}”."
   text_enumeration_category_reassign_to: 'Priskirti juos šiai reikšmei:'
   text_email_delivery_not_configured: "El.pašto siuntimas nesukonfigūruotas ir perspėjimai neaktyvus.\nSukonfigūruokite savo SMTP serverį byloje config/configuration.yml ir perleiskite programą norėdami pritaikyti pakeitimus."
@@ -1270,3 +1270,18 @@ lt:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

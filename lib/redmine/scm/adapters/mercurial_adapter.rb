@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -92,7 +92,7 @@ module Redmine
                    :lastrev => Revision.new(:revision => tip['revision'],
                                             :scmid => tip['node']))
         # rescue HgCommandAborted
-        rescue Exception => e
+        rescue => e
           logger.error "hg: error during getting info: #{e.message}"
           nil
         end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -33,12 +33,6 @@ class RepositoryBazaarTest < ActiveSupport::TestCase
   # Bazaar core does not support xml output such as Subversion and Mercurial.
   # "bzr" command output and command line parameter depend on locale.
   # So, non ASCII path tests cannot run independent locale.
-  #
-  # If you want to run Bazaar non ASCII path tests on Linux *Ruby 1.9*,
-  # you need to set locale character set "ISO-8859-1".
-  # E.g. "LANG=en_US.ISO-8859-1".
-  # On Linux other platforms (e.g. Ruby 1.8, JRuby),
-  # you need to set "RUN_LATIN1_OUTPUT_TEST = true" manually.
   #
   # On Windows, because it is too hard to change system locale,
   # you cannot run Bazaar non ASCII path tests.

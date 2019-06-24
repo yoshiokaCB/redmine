@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -30,14 +30,6 @@ class RepositoriesGitControllerTest < Redmine::RepositoryControllerTest
   PRJ_ID     = 3
   NUM_REV = 28
 
-  ## Git, Mercurial and CVS path encodings are binary.
-  ## Subversion supports URL encoding for path.
-  ## Redmine Mercurial adapter and extension use URL encoding.
-  ## Git accepts only binary path in command line parameter.
-  ## So, there is no way to use binary command line parameter in JRuby.
-  JRUBY_SKIP     = (RUBY_PLATFORM == 'java')
-  JRUBY_SKIP_STR = "TODO: This test fails in JRuby"
-
   def setup
     super
     @ruby19_non_utf8_pass = Encoding.default_external.to_s != 'UTF-8'
@@ -63,7 +55,7 @@ class RepositoriesGitControllerTest < Redmine::RepositoryControllerTest
             :is_default => '0',
             :identifier => 'test-create',
             :report_last_commit => '1',
-                                 
+
           }
         }
     end
@@ -77,7 +69,7 @@ class RepositoriesGitControllerTest < Redmine::RepositoryControllerTest
         :id => repository.id,
         :repository => {
           :report_last_commit => '0'
-          
+
         }
       }
     assert_response 302
@@ -259,8 +251,6 @@ class RepositoriesGitControllerTest < Redmine::RepositoryControllerTest
         puts_ruby19_non_utf8_pass()
       elsif WINDOWS_PASS
         puts WINDOWS_SKIP_STR
-      elsif JRUBY_SKIP
-        puts JRUBY_SKIP_STR
       else
         with_settings :repositories_encodings => 'UTF-8,ISO-8859-1' do
           ['57ca437c', '57ca437c0acbbcb749821fdf3726a1367056d364'].each do |r1|
@@ -558,8 +548,6 @@ class RepositoriesGitControllerTest < Redmine::RepositoryControllerTest
         puts_ruby19_non_utf8_pass()
       elsif WINDOWS_PASS
         puts WINDOWS_SKIP_STR
-      elsif JRUBY_SKIP
-        puts JRUBY_SKIP_STR
       else
         with_settings :repositories_encodings => 'UTF-8,ISO-8859-1' do
           ['57ca437c', '57ca437c0acbbcb749821fdf3726a1367056d364'].each do |r1|

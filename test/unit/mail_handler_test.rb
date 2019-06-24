@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -496,6 +496,21 @@ class MailHandlerTest < ActiveSupport::TestCase
     assert_equal 'ecookbook', issue.project.identifier
   end
 
+  def test_add_issue_with_private_keyword
+    User.find_by_mail('jsmith@somenet.foo').update_attribute 'language', 'fr'
+    # give the user permission to set issues private:
+    MemberRole.create! member_id: 3, role_id: 1
+    issue = submit_email(
+              'ticket_with_localized_private_flag.eml',
+              :allow_override => 'is_private,tracker,category,priority'
+            )
+    assert issue.is_a?(Issue)
+    refute issue.new_record?
+    issue.reload
+    assert_equal 'New ticket on a given project', issue.subject
+    assert issue.is_private
+  end
+
   def test_add_issue_with_localized_attributes
     User.find_by_mail('jsmith@somenet.foo').update_attribute 'language', 'fr'
     issue = submit_email(
@@ -987,6 +1002,17 @@ class MailHandlerTest < ActiveSupport::TestCase
     assert_equal Message.find(1), m.parent
   end
 
+  def test_reply_to_a_locked_topic
+    # Lock the topic
+    topic = Message.find(2).parent
+    topic.update_attribute :locked, true
+
+    assert_no_difference('topic.replies_count') do
+      m = submit_email('message_reply_by_subject.eml')
+      assert_not_kind_of Message, m
+    end
+  end
+
   def test_should_convert_tags_of_html_only_emails
     with_settings :text_formatting => 'textile' do
       issue = submit_email('ticket_html_only.eml', :issue => {:project => 'ecookbook'})
@@ -1208,7 +1234,7 @@ class MailHandlerTest < ActiveSupport::TestCase
   end
 
   def test_safe_receive_should_rescue_exceptions_and_return_false
-    MailHandler.stubs(:receive).raises(Exception.new "Something went wrong")
+    MailHandler.stubs(:receive).raises(StandardError.new "Something went wrong")
 
     assert_equal false, MailHandler.safe_receive
   end

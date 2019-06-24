@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -123,13 +123,13 @@ DIFF
 --- file.c
 -------------------------
 +A line that starts with dashes:
- 
+
  and removed.
- 
+
 @@ -23,4 +19,4 @@
- 
- 
- 
+
+
+
 -Another chunk of change
 +Another chunk of changes
 
@@ -360,7 +360,7 @@ DIFF
   end
 
   def test_offset_range_japanese_4
-    # UTF-8 The 2nd byte differs. 
+    # UTF-8 The 2nd byte differs.
     with_settings :repositories_encodings => '' do
       diff = Redmine::UnifiedDiff.new(
                read_diff_fixture('issue-13644-4.diff'), :type => 'sbs')
@@ -372,7 +372,7 @@ DIFF
   end
 
   def test_offset_range_japanese_5
-    # UTF-8 The 2nd byte differs. 
+    # UTF-8 The 2nd byte differs.
     with_settings :repositories_encodings => '' do
       diff = Redmine::UnifiedDiff.new(
                read_diff_fixture('issue-13644-5.diff'), :type => 'sbs')

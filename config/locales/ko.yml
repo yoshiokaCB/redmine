@@ -478,7 +478,6 @@ ko:
   label_enumeration_new: 새 코드값
   label_information: 정보
   label_information_plural: 정보
-  label_please_login: 로그인하세요.
   label_register: 등록
   label_login_with_open_id_option: 또는 OpenID로 로그인
   label_password_lost: 비밀번호 찾기
@@ -821,6 +820,7 @@ ko:
   text_assign_time_entries_to_project: 보고된 시간을 프로젝트에 할당하기
   text_reassign_time_entries: '이 알림에 보고된 시간을 재할당하기:'
   text_user_wrote: "%{value}의 덧글:"
+  text_user_wrote_in: "%{value}의 덧글 (%{link}):"
   text_enumeration_category_reassign_to: '새로운 값을 설정:'
   text_enumeration_destroy_question: "%{count} 개의 일감이 이 값을 사용하고 있습니다."
   text_email_delivery_not_configured: "이메일 전달이 설정되지 않았습니다. 그래서 알림이 비활성화되었습니다.\n SMTP서버를 config/configuration.yml에서 설정하고 어플리케이션을 다시 시작하십시오. 그러면 동작합니다."
@@ -928,7 +928,7 @@ ko:
   permission_export_wiki_pages: 위키 페이지 내보내기
   setting_cache_formatted_text: 형식을 가진 텍스트 빠른 임시 기억
   permission_manage_project_activities: 프로젝트 작업내역 관리
-  error_unable_delete_issue_status: 일감 상태를 지울 수 없습니다.
+  error_unable_delete_issue_status: 일감 상태를 지울 수 없습니다. (%{value})
   label_profile: 사용자정보
   permission_manage_subtasks: 하위 일감 관리
   field_parent_issue: 상위 일감
@@ -1318,3 +1318,18 @@ ko:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -40,9 +40,11 @@ require 'redmine/activity/fetcher'
 require 'redmine/ciphering'
 require 'redmine/codeset_util'
 require 'redmine/field_format'
+require 'redmine/info'
 require 'redmine/menu_manager'
 require 'redmine/notifiable'
 require 'redmine/platform'
+require 'redmine/project_jump_box'
 require 'redmine/mime_type'
 require 'redmine/search'
 require 'redmine/syntax_highlighting'
@@ -76,7 +78,7 @@ Redmine::Scm::Base.add "Filesystem"
 
 # Permissions
 Redmine::AccessControl.map do |map|
-  map.permission :view_project, {:projects => [:show], :activities => [:index]}, :public => true, :read => true
+  map.permission :view_project, {:projects => [:show, :bookmark], :activities => [:index]}, :public => true, :read => true
   map.permission :search_project, {:search => :index}, :public => true, :read => true
   map.permission :add_project, {:projects => [:new, :create]}, :require => :loggedin
   map.permission :edit_project, {:projects => [:settings, :edit, :update]}, :require => :member
@@ -92,7 +94,7 @@ Redmine::AccessControl.map do |map|
 
   map.project_module :issue_tracking do |map|
     # Issues
-    map.permission :view_issues, {:issues => [:index, :show],
+    map.permission :view_issues, {:issues => [:index, :show, :issue_tab],
                                   :auto_complete => [:issues],
                                   :context_menus => [:issues],
                                   :versions => [:index, :show, :status_by],
@@ -118,7 +120,7 @@ Redmine::AccessControl.map do |map|
     map.permission :view_issue_watchers, {}, :read => true
     map.permission :add_issue_watchers, {:watchers => [:new, :create, :append, :autocomplete_for_user]}
     map.permission :delete_issue_watchers, {:watchers => :destroy}
-    map.permission :import_issues, {:imports => [:new, :create, :settings, :mapping, :run, :show]}
+    map.permission :import_issues, {}
     # Issue categories
     map.permission :manage_categories, {:projects => :settings, :issue_categories => [:index, :show, :new, :create, :edit, :update, :destroy]}, :require => :member
   end

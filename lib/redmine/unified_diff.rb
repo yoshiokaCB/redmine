@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -227,7 +227,7 @@ module Redmine
     attr_accessor :type_diff_left
     attr_accessor :offsets
 
-    def initialize()
+    def initialize
       self.nb_line_left = ''
       self.nb_line_right = ''
       self.line_left = ''

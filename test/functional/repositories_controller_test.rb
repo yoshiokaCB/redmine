@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -56,7 +56,7 @@ class RepositoriesControllerTest < Redmine::RepositoryControllerTest
       assert_select 'option[value=Git]:not([selected])'
     end
   end
- 
+
   def test_get_new_with_type
     @request.session[:user_id] = 1
     get :new, :params => {

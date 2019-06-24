@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -148,6 +148,7 @@ class TimeEntryQuery < Query
   def results_scope(options={})
     order_option = [group_by_sort_order, (options[:order] || sort_clause)].flatten.reject(&:blank?)
 
+    order_option << "#{TimeEntry.table_name}.id ASC"
     base_scope.
       order(order_option).
       joins(joins_for_order_statement(order_option.join(',')))

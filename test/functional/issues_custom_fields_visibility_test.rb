@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -174,8 +174,8 @@ class IssuesCustomFieldsVisibilityTest < Redmine::ControllerTest
           :id => @issue.id,
           :issue => {
             :custom_field_values => {
-            @field1.id.to_s => "User#{user.id}Value0",    
-                    @field2.id.to_s => "User#{user.id}Value1",  
+            @field1.id.to_s => "User#{user.id}Value0",
+                    @field2.id.to_s => "User#{user.id}Value1",
                   @field3.id.to_s => "User#{user.id}Value2",
                 }
         }
@@ -281,9 +281,9 @@ class IssuesCustomFieldsVisibilityTest < Redmine::ControllerTest
               :priority_id => 5,
               :custom_field_values => {
                 @field1.id.to_s => 'Value0', @field2.id.to_s => 'Value1', @field3.id.to_s => 'Value2'
-              },    
+              },
               :watcher_user_ids => users_to_test.keys.map(&:id)
-              
+
             }
           }
         assert_response 302
@@ -321,8 +321,8 @@ class IssuesCustomFieldsVisibilityTest < Redmine::ControllerTest
           :issue => {
             :custom_field_values => {
               @field1.id.to_s => 'NewValue0', @field2.id.to_s => 'NewValue1', @field3.id.to_s => 'NewValue2'
-            }    
-            
+            }
+
           }
         }
       assert_response 302
@@ -358,8 +358,8 @@ class IssuesCustomFieldsVisibilityTest < Redmine::ControllerTest
           :issue => {
             :custom_field_values => {
               @field2.id.to_s => 'NewValue1', @field3.id.to_s => 'NewValue2'
-            }    
-            
+            }
+
           }
         }
       assert_response 302

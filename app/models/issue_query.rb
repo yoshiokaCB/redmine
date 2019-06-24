@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -76,10 +76,20 @@ class IssueQuery < Query
     options[:draw_progress_line] = (arg == '1' ? '1' : nil)
   end
 
+  def draw_selected_columns
+    r = options[:draw_selected_columns]
+    r == '1'
+  end
+
+  def draw_selected_columns=(arg)
+    options[:draw_selected_columns] = (arg == '1' ? '1' : nil)
+  end
+
   def build_from_params(params, defaults={})
     super
     self.draw_relations = params[:draw_relations] || (params[:query] && params[:query][:draw_relations]) || options[:draw_relations]
     self.draw_progress_line = params[:draw_progress_line] || (params[:query] && params[:query][:draw_progress_line]) || options[:draw_progress_line]
+    self.draw_selected_columns = params[:draw_selected_columns] || (params[:query] && params[:query][:draw_selected_columns]) || options[:draw_progress_line]
     self
   end
 
@@ -287,6 +297,10 @@ class IssueQuery < Query
   # Valid options are :order, :offset, :limit, :include, :conditions
   def issues(options={})
     order_option = [group_by_sort_order, (options[:order] || sort_clause)].flatten.reject(&:blank?)
+    # The default order of IssueQuery is issues.id DESC(by IssueQuery#default_sort_criteria)
+    unless ["#{Issue.table_name}.id ASC", "#{Issue.table_name}.id DESC"].any?{|i| order_option.include?(i)}
+      order_option << "#{Issue.table_name}.id DESC"
+    end
 
     scope = Issue.visible.
       joins(:status, :project).
@@ -329,6 +343,10 @@ class IssueQuery < Query
   # Returns the issues ids
   def issue_ids(options={})
     order_option = [group_by_sort_order, (options[:order] || sort_clause)].flatten.reject(&:blank?)
+    # The default order of IssueQuery is issues.id DESC(by IssueQuery#default_sort_criteria)
+    unless ["#{Issue.table_name}.id ASC", "#{Issue.table_name}.id DESC"].any?{|i| order_option.include?(i)}
+      order_option << "#{Issue.table_name}.id DESC"
+    end
 
     Issue.visible.
       joins(:status, :project).

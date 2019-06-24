@@ -1,3 +1,8 @@
+<%
+  issue = tab[:locals][:issue]
+  journals = tab[:locals][:journals]
+%>
+
 <% reply_links = issue.notes_addable? -%>
 <% for journal in journals %>
   <div id="change-<%= journal.id %>" class="<%= journal.css_classes %>">
@@ -7,7 +12,7 @@
       <a href="#note-<%= journal.indice %>" class="journal-link">#<%= journal.indice %></a>
     </div>
     <h4>
-      <%= avatar(journal.user, :size => "24") %>
+      <%= avatar(journal.user) %>
       <%= authoring journal.created_on, journal.user, :label => :label_updated_time_by %>
       <%= render_private_notes_indicator(journal) %>
     </h4>

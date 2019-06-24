@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,7 +23,6 @@ require 'cgi'
 module ApplicationHelper
   include Redmine::WikiFormatting::Macros::Definitions
   include Redmine::I18n
-  include GravatarHelper::PublicMethods
   include Redmine::Pagination::Helper
   include Redmine::SudoMode::Helper
   include Redmine::Themes::Helper
@@ -371,7 +370,12 @@ module ApplicationHelper
       content << "<ul class=\"pages-hierarchy\">\n"
       pages[node].each do |page|
         content << "<li>"
-        content << link_to(h(page.pretty_title), {:controller => 'wiki', :action => 'show', :project_id => page.project, :id => page.title, :version => nil},
+        if controller.controller_name == 'wiki' && controller.action_name == 'export'
+          href = "##{page.title}"
+        else
+          href = {:controller => 'wiki', :action => 'show', :project_id => page.project, :id => page.title, :version => nil}
+        end
+        content << link_to(h(page.pretty_title), href,
                            :title => (options[:timestamp] && page.updated_on ? l(:label_updated_time, distance_of_time_in_words(Time.now, page.updated_on)) : nil))
         content << "\n" + render_page_hierarchy(pages, page.id, options) if pages[page.id]
         content << "</li>\n"
@@ -403,6 +407,17 @@ module ApplicationHelper
     end
   end
 
+  # Returns the tab action depending on the tab properties
+  def get_tab_action(tab)
+    if tab[:onclick]
+      return tab[:onclick]
+    elsif tab[:partial]
+      return "showTab('#{tab[:name]}', this.href)"
+    else
+      return nil
+    end
+  end
+
   # Returns the default scope for the quick search form
   # Could be 'all', 'my_projects', 'subprojects' or nil (current project)
   def default_search_project_scope
@@ -421,12 +436,38 @@ module ApplicationHelper
   end
 
   def render_projects_for_jump_box(projects, selected=nil)
+    jump_box = Redmine::ProjectJumpBox.new User.current
+    bookmarked = jump_box.bookmarked_projects(params[:q])
+    recents = jump_box.recently_used_projects(params[:q])
+    projects = projects - (recents + bookmarked)
+
+    projects_label = (bookmarked.any? || recents.any?) ? :label_optgroup_others : :label_project_plural
+
     jump = params[:jump].presence || current_menu_item
     s = (+'').html_safe
-    project_tree(projects) do |project, level|
+
+    build_project_link = ->(project, level = 0){
       padding = level * 16
       text = content_tag('span', project.name, :style => "padding-left:#{padding}px;")
       s << link_to(text, project_path(project, :jump => jump), :title => project.name, :class => (project == selected ? 'selected' : nil))
+    }
+
+    [
+      [bookmarked, :label_optgroup_bookmarks, true],
+      [recents,   :label_optgroup_recents,    false],
+      [projects,  projects_label,             true]
+    ].each do |projects, label, is_tree|
+
+      next if projects.blank?
+
+      s << content_tag(:strong, l(label))
+      if is_tree
+        project_tree(projects, &build_project_link)
+      else
+        # we do not want to render recently used projects as a tree, but in the
+        # order they were used (most recent first)
+        projects.each(&build_project_link)
+      end
     end
     s
   end
@@ -565,7 +606,7 @@ module ApplicationHelper
       :reorder_param => options[:param] || object.class.name.underscore
     }
     content_tag('span', '',
-      :class => "sort-handle",
+      :class => "icon-only icon-sort-handle sort-handle",
       :data => data,
       :title => l(:button_sort))
   end
@@ -711,7 +752,7 @@ module ApplicationHelper
     @current_section = 0 if options[:edit_section_links]
 
     parse_sections(text, project, obj, attr, only_path, options)
-    text = parse_non_pre_blocks(text, obj, macros) do |text|
+    text = parse_non_pre_blocks(text, obj, macros, options) do |text|
       [:parse_inline_attachments, :parse_hires_images, :parse_wiki_links, :parse_redmine_links].each do |method_name|
         send method_name, text, project, obj, attr, only_path, options
       end
@@ -725,7 +766,7 @@ module ApplicationHelper
     text.html_safe
   end
 
-  def parse_non_pre_blocks(text, obj, macros)
+  def parse_non_pre_blocks(text, obj, macros, options={})
     s = StringScanner.new(text)
     tags = []
     parsed = +''
@@ -734,9 +775,9 @@ module ApplicationHelper
       text, full_tag, closing, tag = s[1], s[2], s[3], s[4]
       if tags.empty?
         yield text
-        inject_macros(text, obj, macros) if macros.any?
+        inject_macros(text, obj, macros, true, options) if macros.any?
       else
-        inject_macros(text, obj, macros, false) if macros.any?
+        inject_macros(text, obj, macros, false, options) if macros.any?
       end
       parsed << text
       if tag
@@ -1180,14 +1221,14 @@ module ApplicationHelper
   end
 
   # Executes and replaces macros in text
-  def inject_macros(text, obj, macros, execute=true)
+  def inject_macros(text, obj, macros, execute=true, options={})
     text.gsub!(MACRO_SUB_RE) do
       all, index = $1, $2.to_i
       orig = macros.delete(index)
       if execute && orig && orig =~ MACROS_RE
         esc, all, macro, args, block = $2, $3, $4.downcase, $6.to_s, $7.try(:strip)
         if esc.nil?
-          h(exec_macro(macro, obj, args, block) || all)
+          h(exec_macro(macro, obj, args, block, options) || all)
         else
           h(all)
         end
@@ -1263,6 +1304,13 @@ module ApplicationHelper
     options = args.last
     options.merge!({:builder => Redmine::Views::LabelledFormBuilder})
     fields_for(*args, &proc)
+  end
+
+  def form_tag_html(html_options)
+    # Set a randomized name attribute on all form fields by default
+    # as a workaround to https://bugzilla.mozilla.org/show_bug.cgi?id=1279253
+    html_options['name'] ||= "#{html_options['id'] || 'form'}-#{SecureRandom.hex(4)}"
+    super
   end
 
   # Render the error messages for the given objects
@@ -1346,7 +1394,7 @@ module ApplicationHelper
 
   def progress_bar(pcts, options={})
     pcts = [pcts, pcts] unless pcts.is_a?(Array)
-    pcts = pcts.collect(&:round)
+    pcts = pcts.collect(&:floor)
     pcts[1] = pcts[1] - pcts[0]
     pcts << (100 - pcts[1] - pcts[0])
     titles = options[:titles].to_a
@@ -1477,39 +1525,6 @@ module ApplicationHelper
 
   def email_delivery_enabled?
     !!ActionMailer::Base.perform_deliveries
-  end
-
-  # Returns the avatar image tag for the given +user+ if avatars are enabled
-  # +user+ can be a User or a string that will be scanned for an email address (eg. 'joe <joe@foo.bar>')
-  def avatar(user, options = { })
-    if Setting.gravatar_enabled?
-      options.merge!(:default => Setting.gravatar_default)
-      email = nil
-      if user.respond_to?(:mail)
-        email = user.mail
-      elsif user.to_s =~ %r{<(.+?)>}
-        email = $1
-      end
-      if email.present?
-        gravatar(email.to_s.downcase, options) rescue nil
-      elsif user.is_a?(AnonymousUser)
-        image_tag 'anonymous.png',
-                  GravatarHelper::DEFAULT_OPTIONS
-                    .except(:default, :rating, :ssl).merge(options)
-      else
-        nil
-      end
-    else
-      ''
-    end
-  end
-
-  # Returns a link to edit user's avatar if avatars are enabled
-  def avatar_edit_link(user, options={})
-    if Setting.gravatar_enabled?
-      url = Redmine::Configuration['avatar_server_url']
-      link_to avatar(user, {:title => l(:button_edit)}.merge(options)), url, :target => '_blank'
-    end
   end
 
   def sanitize_anchor_name(anchor)

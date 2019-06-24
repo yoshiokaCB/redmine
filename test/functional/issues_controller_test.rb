@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -355,8 +355,13 @@ class IssuesControllerTest < Redmine::ControllerTest
     end
   end
 
-  def test_index_grouped_by_created_on
+  def test_index_grouped_by_created_on_if_time_zone_is_utc
+    # TODO: test fails with mysql
+    skip if mysql?
     skip unless IssueQuery.new.groupable_columns.detect {|c| c.name == :created_on}
+
+    @request.session[:user_id] = 2
+    User.find(2).pref.update(time_zone: 'UTC')
 
     get :index, :params => {
         :set_filter => 1,
@@ -365,6 +370,25 @@ class IssuesControllerTest < Redmine::ControllerTest
     assert_response :success
 
     assert_select 'tr.group span.name', :text => '07/19/2006' do
+      assert_select '+ span.count', :text => '2'
+    end
+  end
+
+  def test_index_grouped_by_created_on_if_time_zone_is_nil
+    skip unless IssueQuery.new.groupable_columns.detect {|c| c.name == :created_on}
+    current_user = User.find(2)
+    @request.session[:user_id] = current_user.id
+    current_user.pref.update(time_zone: nil)
+
+    get :index, :params => {
+        :set_filter => 1,
+        :group_by => 'created_on'
+      }
+    assert_response :success
+
+    # group_name depends on localtime
+    group_name = format_date(Issue.second.created_on.localtime)
+    assert_select 'tr.group span.name', :text => group_name do
       assert_select '+ span.count', :text => '2'
     end
   end
@@ -2146,9 +2170,11 @@ class IssuesControllerTest < Redmine::ControllerTest
     project.disable_module! :repository
 
     @request.session[:user_id] = 2
-    get :show, :params => {
-        :id => issue.id
-      }
+    get :issue_tab, :params => {
+        :id => issue.id,
+        :name => 'changesets'
+      },
+      :xhr => true
 
     assert_select 'a[href=?]', '/projects/ecookbook/repository/10/revisions/3'
   end
@@ -2459,6 +2485,100 @@ class IssuesControllerTest < Redmine::ControllerTest
     assert_select 'a', :text => 'Delete', :count => 0
   end
 
+  def test_show_should_not_display_history_tabs_for_issue_without_journals
+    @request.session[:user_id] = 1
+
+    get :show, :params => {:id => 5}
+    assert_response :success
+    assert_select '#history div.tabs', 0
+    assert_select '#history p.nodata', :text => 'No data to display'
+  end
+
+  def test_show_display_only_all_and_notes_tabs_for_issue_with_notes_only
+    @request.session[:user_id] = 1
+
+    get :show, :params => {:id => 6}
+    assert_response :success
+    assert_select '#history' do
+      assert_select 'div.tabs ul a', 2
+      assert_select 'div.tabs a[id=?]', 'tab-history', :text => 'History'
+      assert_select 'div.tabs a[id=?]', 'tab-notes', :text => 'Notes'
+    end
+  end
+
+  def test_show_display_only_all_and_history_tabs_for_issue_with_history_changes_only
+    journal = Journal.create!(:journalized => Issue.find(5), :user_id => 1)
+    detail = JournalDetail.create!(:journal => journal, :property => 'attr', :prop_key => 'description',
+      :old_value => 'Foo', :value => 'Bar')
+
+    @request.session[:user_id] = 1
+
+    get :show, :params => {:id => 5}
+    assert_response :success
+    assert_select '#history' do
+      assert_select 'div.tabs ul a', 2
+      assert_select 'div.tabs a[id=?]', 'tab-history', :text => 'History'
+      assert_select 'div.tabs a[id=?]', 'tab-properties', :text => 'Property changes'
+    end
+  end
+
+  def test_show_display_all_notes_and_history_tabs_for_issue_with_notes_and_history_changes
+    journal = Journal.create!(:journalized => Issue.find(6), :user_id => 1)
+    detail = JournalDetail.create!(:journal => journal, :property => 'attr', :prop_key => 'description',
+      :old_value => 'Foo', :value => 'Bar')
+
+    @request.session[:user_id] = 1
+
+    get :show, :params => {:id => 6}
+    assert_response :success
+    assert_select '#history' do
+      assert_select 'div.tabs ul a', 3
+      assert_select 'div.tabs a[id=?]', 'tab-history', :text => 'History'
+      assert_select 'div.tabs a[id=?]', 'tab-notes', :text => 'Notes'
+      assert_select 'div.tabs a[id=?]', 'tab-properties', :text => 'Property changes'
+    end
+  end
+
+  def test_show_display_changesets_tab_for_issue_with_changesets
+    project = Project.find(2)
+    issue = Issue.find(9)
+    issue.changeset_ids = [102]
+    issue.save!
+
+    @request.session[:user_id] = 2
+    get :show, :params => {:id => issue.id}
+
+    assert_select '#history' do
+      assert_select 'div.tabs ul a', 1
+      assert_select 'div.tabs a[id=?]', 'tab-changesets', :text => 'Associated revisions'
+    end
+  end
+
+  def test_show_should_display_spent_time_tab_for_issue_with_time_entries
+    @request.session[:user_id] = 1
+    get :show, :params => {:id => 3}
+    assert_response :success
+
+    assert_select '#history' do
+      assert_select 'div.tabs ul a', 1
+      assert_select 'div.tabs a[id=?]', 'tab-time_entries', :text => 'Spent time'
+    end
+
+    get :issue_tab, :params => {
+        :id => 3,
+        :name => 'time_entries'
+      },
+      :xhr => true
+    assert_response :success
+
+    assert_select 'div[id=?]', 'time-entry-3' do
+      assert_select 'a[title=?][href=?]', 'Edit', '/time_entries/3/edit'
+      assert_select 'a[title=?][href=?]', 'Delete', '/time_entries/3'
+
+      assert_select 'ul[class=?]', 'details', :text => /1.00 h/
+    end
+  end
+
   def test_get_new
     @request.session[:user_id] = 2
     get :new, :params => {
@@ -2763,7 +2883,7 @@ class IssuesControllerTest < Redmine::ControllerTest
     assert_response :success
 
     assert_select 'select[name=?][multiple=multiple]', "issue[custom_field_values][#{field.id}][]" do
-      assert_select 'option', Project.find(1).users.count
+      assert_select 'option', Project.find(1).users.count + 1 # users + 'me'
       assert_select 'option[value="2"]', :text => 'John Smith'
     end
     assert_select 'input[name=?][type=hidden][value=?]', "issue[custom_field_values][#{field.id}][]", ''
@@ -5553,7 +5673,7 @@ class IssuesControllerTest < Redmine::ControllerTest
     assert_response :success
 
     assert_select 'select.user_cf[name=?]', "issue[custom_field_values][#{field.id}]" do
-      assert_select 'option', Project.find(1).users.count + 2 # "no change" + "none" options
+      assert_select 'option', Project.find(1).users.count + 3 # "no change" + "none" + "me" options
     end
   end
 

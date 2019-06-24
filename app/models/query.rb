@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -327,7 +327,7 @@ class Query < ActiveRecord::Base
     if self == ::Query
       # Visibility depends on permissions for each subclass,
       # raise an error if the scope is called from Query (eg. Query.visible)
-      raise Exception.new("Cannot call .visible scope from the base Query class, but from subclasses only.")
+      raise "Cannot call .visible scope from the base Query class, but from subclasses only."
     end
 
     user = args.shift || User.current

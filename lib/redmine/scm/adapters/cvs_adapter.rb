@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # redMine - project management software
-# Copyright (C) 2006-2007  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -445,7 +445,7 @@ module Redmine
         end
 
         # Interpretiert die cvs revisionsnummern wie z.b. 1.14 oder 1.3.0.15
-        def parseRevision()
+        def parseRevision
           pieces = @complete_rev.split(".")
           @revision = pieces.last.to_i
           baseSize = 1

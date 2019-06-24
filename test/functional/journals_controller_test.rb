@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -180,11 +180,13 @@ class JournalsControllerTest < Redmine::ControllerTest
     @request.session[:user_id] = 2
     get :new, :params => {
         :id => 6,
-        :journal_id => 4
+        :journal_id => 4,
+        :journal_indice => 1
       },
       :xhr => true
     assert_response :success
     assert_equal 'text/javascript', response.content_type
+    assert_include 'Redmine Admin wrote in #note-1:', response.body
     assert_include '> A comment with a private version', response.body
   end
 
@@ -255,6 +257,8 @@ class JournalsControllerTest < Redmine::ControllerTest
     assert_equal 'text/javascript', response.content_type
     assert_equal 'Updated notes', Journal.find(2).notes
     assert_include 'journal-2-notes', response.body
+    # response should include journal_indice param for quote link
+    assert_include 'journal_indice=2', response.body
   end
 
   def test_update_xhr_with_private_notes_checked

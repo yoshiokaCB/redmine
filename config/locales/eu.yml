@@ -456,7 +456,6 @@ eu:
   label_enumeration_new: Balio berria
   label_information: Informazioa
   label_information_plural: Informazioa
-  label_please_login: Saioa hasi mesedez
   label_register: Erregistratu
   label_login_with_open_id_option: edo OpenID-rekin saioa hasi
   label_password_lost: Pasahitza galduta
@@ -839,6 +838,7 @@ eu:
   text_assign_time_entries_to_project: Berri emandako orduak proiektura esleitu
   text_reassign_time_entries: 'Berri emandako orduak zeregin honetara esleitu:'
   text_user_wrote: "%{value}-(e)k idatzi zuen:"
+  text_user_wrote_in: "%{value}-(e)k idatzi zuen (%{link}):"
   text_enumeration_destroy_question: "%{count} objetu balio honetara esleituta daude."
   text_enumeration_category_reassign_to: 'Beste balio honetara esleitu:'
   text_email_delivery_not_configured: "Eposta bidalketa ez dago konfiguratuta eta jakinarazpenak ezgaituta daude.\nKonfiguratu zure SMTP zerbitzaria config/configuration.yml-n eta aplikazioa berrabiarazi hauek gaitzeko."
@@ -882,7 +882,7 @@ eu:
   permission_export_wiki_pages: Wiki orriak esportatu
   setting_cache_formatted_text: Formatudun testua katxeatu
   permission_manage_project_activities: Proiektuaren jarduerak kudeatu
-  error_unable_delete_issue_status: Ezine da zereginaren egoera ezabatu
+  error_unable_delete_issue_status: Ezine da zereginaren egoera ezabatu (%{value})
   label_profile: Profila
   permission_manage_subtasks: Azpiatazak kudeatu
   field_parent_issue: Zeregin gurasoa
@@ -1281,3 +1281,18 @@ eu:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

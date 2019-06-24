@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -176,6 +176,13 @@ module IssuesHelper
     end
   end
 
+  def issue_due_date_details(issue)
+    return if issue&.due_date.nil?
+    s = format_date(issue.due_date)
+    s += " (#{due_date_distance_in_words(issue.due_date)})" unless issue.closed?
+    s
+  end
+
   # Returns a link for adding a new subtask to the given issue
   def link_to_new_subtask(issue)
     attrs = {
@@ -319,18 +326,22 @@ module IssuesHelper
     items = []
     %w(author status priority assigned_to category fixed_version start_date due_date).each do |attribute|
       if issue.disabled_core_fields.grep(/^#{attribute}(_id)?$/).empty?
+        attr_value = (issue.send attribute).to_s
+        next if attr_value.blank?
         if html
-          items << content_tag('strong', "#{l("field_#{attribute}")}: ") + (issue.send attribute)
+          items << content_tag('strong', "#{l("field_#{attribute}")}: ") + attr_value
         else
-          items << "#{l("field_#{attribute}")}: #{issue.send attribute}"
+          items << "#{l("field_#{attribute}")}: #{attr_value}"
         end
       end
     end
     issue.visible_custom_field_values(user).each do |value|
+      cf_value = show_value(value, false)
+      next if cf_value.blank?
       if html
-        items << content_tag('strong', "#{value.custom_field.name}: ") + show_value(value, false)
+        items << content_tag('strong', "#{value.custom_field.name}: ") + cf_value
       else
-        items << "#{value.custom_field.name}: #{show_value(value, false)}"
+        items << "#{value.custom_field.name}: #{cf_value}"
       end
     end
     items
@@ -538,4 +549,36 @@ module IssuesHelper
       end
     end
   end
+
+  # Issue history tabs
+  def issue_history_tabs
+    tabs = []
+    if @journals.present?
+      journals_without_notes = @journals.select{|value| value.notes.blank?}
+      journals_with_notes = @journals.reject{|value| value.notes.blank?}
+
+      tabs << {:name => 'history', :label => :label_history, :onclick => 'showIssueHistory("history", this.href)', :partial => 'issues/tabs/history', :locals => {:issue => @issue, :journals => @journals}}
+      tabs << {:name => 'notes', :label => :label_issue_history_notes, :onclick => 'showIssueHistory("notes", this.href)'} if journals_with_notes.any?
+      tabs << {:name => 'properties', :label => :label_issue_history_properties, :onclick => 'showIssueHistory("properties", this.href)'} if journals_without_notes.any?
+    end
+    tabs << {:name => 'time_entries', :label => :label_time_entry_plural, :remote => true, :onclick => "getRemoteTab('time_entries', '#{tab_issue_path(@issue, :name => 'time_entries')}', '#{issue_path(@issue, :tab => 'time_entries')}')"} if User.current.allowed_to?(:view_time_entries, @project) && @issue.spent_hours > 0
+    tabs << {:name => 'changesets', :label => :label_associated_revisions, :remote => true, :onclick => "getRemoteTab('changesets', '#{tab_issue_path(@issue, :name => 'changesets')}', '#{issue_path(@issue, :tab => 'changesets')}')"} if @has_changesets
+    tabs
+  end
+
+  def issue_history_default_tab
+    # tab params overrides user default tab preference
+    return params[:tab] if params[:tab].present?
+    user_default_tab = User.current.pref.history_default_tab
+
+    case user_default_tab
+    when 'last_tab_visited'
+      cookies['history_last_tab'].presence || 'notes'
+    when ''
+      'notes'
+    else
+      user_default_tab
+    end
+  end
+
 end

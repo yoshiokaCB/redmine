@@ -521,7 +521,6 @@ gl:
   label_password_lost: "Esqueceu o contrasinal?"
   label_permissions: Permisos
   label_permissions_report: Informe de permisos
-  label_please_login: "Acceder"
   label_plugins: Complementos
   label_precedes: anterior a
   label_preferences: Preferencias
@@ -790,6 +789,7 @@ gl:
   text_unallowed_characters: Caracteres non permitidos
   text_user_mail_option: "Dos proxectos non seleccionados, só recibirá notificacións sobre elementos monitorizados ou elementos nos que estea involucrado (por exemplo, peticións das que vostede sexa autor ou asignadas a vostede)."
   text_user_wrote: "%{value} escribiu:"
+  text_user_wrote_in: "%{value} escribiu (%{link}):"
   text_wiki_destroy_confirmation: Seguro que quere borrar o wiki e todo o seu contido?
   text_workflow_edit: Seleccionar un fluxo de traballo para actualizar
   warning_attachments_not_saved: "Non foi posíbel gardar %{count} ficheiros."
@@ -895,7 +895,7 @@ gl:
   permission_export_wiki_pages: "Exportar as páxinas do wiki"
   setting_cache_formatted_text: "Gardar o texto formatado na caché."
   permission_manage_project_activities: "Xestionar as actividades do proxecto"
-  error_unable_delete_issue_status: "Non foi posíbel eliminar o estado da petición."
+  error_unable_delete_issue_status: "Non foi posíbel eliminar o estado da petición. (%{value})"
   label_profile: "Perfil"
   permission_manage_subtasks: "Xestionar as subtarefas"
   field_parent_issue: "Tarefa superior"
@@ -1287,3 +1287,18 @@ gl:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

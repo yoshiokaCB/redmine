@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -89,7 +89,7 @@ class Redmine::WikiFormatting::MacrosTest < Redmine::HelperTest
 
   def test_multiple_macros_on_the_same_line
     Redmine::WikiFormatting::Macros.macro :foo do |obj, args|
-      args.any? ? "args: #{args.join(',')}" : "no args" 
+      args.any? ? "args: #{args.join(',')}" : "no args"
     end
 
     assert_equal '<p>no args no args</p>', textilizable("{{foo}} {{foo}}")
@@ -212,7 +212,7 @@ class Redmine::WikiFormatting::MacrosTest < Redmine::HelperTest
     text = "{{collapse\n*Collapsed* block of text\n}}"
     with_locale 'en' do
       result = textilizable(text)
-  
+
       assert_select_in result, 'div.collapsed-text'
       assert_select_in result, 'strong', :text => 'Collapsed'
       assert_select_in result, 'a.collapsible.collapsed', :text => 'Show'
@@ -249,7 +249,7 @@ class Redmine::WikiFormatting::MacrosTest < Redmine::HelperTest
 h1. Title
 
 {{collapse(Show example, Hide example)
-h2. Heading 
+h2. Heading
 }}"
 RAW
 
@@ -407,5 +407,15 @@ EXPECTED
   def test_macro_should_support_phrase_modifiers
     text = "*{{hello_world}}*"
     assert_match %r|\A<p><strong>Hello world!.*</strong></p>\z|, textilizable(text)
+  end
+
+  def test_issue_macro_should_not_render_link_if_not_visible
+    assert_equal "<p>#123</p>", textilizable('{{issue(123)}}')
+  end
+
+  def test_issue_macro_should_render_link_to_issue
+    issue = Issue.find 1
+    assert_equal %{<p><a class="issue tracker-1 status-1 priority-4 priority-lowest" href="/issues/1">Bug #1</a>: #{issue.subject}</p>}, textilizable("{{issue(1)}}")
+    assert_equal %{<p>eCookbook - <a class="issue tracker-1 status-1 priority-4 priority-lowest" href="/issues/1">Bug #1</a>: #{issue.subject}</p>}, textilizable("{{issue(1, project=true)}}")
   end
 end

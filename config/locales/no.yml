@@ -350,7 +350,6 @@
   label_enumeration_new: Ny verdi
   label_information: Informasjon
   label_information_plural: Informasjon
-  label_please_login: Vennlist logg inn
   label_register: Registrer
   label_password_lost: Mistet passord
   label_home: Hjem
@@ -672,6 +671,7 @@
   text_assign_time_entries_to_project: Overfør førte timer til prosjektet
   text_reassign_time_entries: 'Overfør førte timer til denne saken:'
   text_user_wrote: "%{value} skrev:"
+  text_user_wrote_in: "%{value} skrev (%{link}):"
 
   default_role_manager: Leder
   default_role_developer: Utvikler
@@ -868,7 +868,7 @@
   permission_export_wiki_pages: Eksporter wiki-sider
   setting_cache_formatted_text: Mellomlagre formattert tekst
   permission_manage_project_activities: Administrere prosjektaktiviteter
-  error_unable_delete_issue_status: Kan ikke slette saksstatus
+  error_unable_delete_issue_status: Kan ikke slette saksstatus (%{value})
   label_profile: Profil
   permission_manage_subtasks: Administrere undersaker
   field_parent_issue: Overordnet sak
@@ -1270,3 +1270,18 @@
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

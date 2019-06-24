@@ -355,7 +355,6 @@ th:
   label_enumeration_new: สร้างใหม่
   label_information: ข้อมูล
   label_information_plural: ข้อมูล
-  label_please_login: กรุณาเข้าระบบก่อน
   label_register: ลงทะเบียน
   label_password_lost: ลืมรหัสผ่าน
   label_home: หน้าแรก
@@ -705,6 +704,7 @@ th:
   mail_body_reminder: "%{count} issue(s) that are assigned to you are due in the next %{days} days:"
   mail_subject_reminder: "%{count} issue(s) due in the next %{days} days"
   text_user_wrote: "%{value} wrote:"
+  text_user_wrote_in: "%{value} wrote (%{link}):"
   label_duplicated_by: duplicated by
   setting_enabled_scm: Enabled SCM
   text_enumeration_category_reassign_to: 'Reassign them to this value:'
@@ -877,7 +877,7 @@ th:
   permission_export_wiki_pages: Export wiki pages
   setting_cache_formatted_text: Cache formatted text
   permission_manage_project_activities: Manage project activities
-  error_unable_delete_issue_status: Unable to delete issue status
+  error_unable_delete_issue_status: Unable to delete issue status (%{value})
   label_profile: Profile
   permission_manage_subtasks: Manage subtasks
   field_parent_issue: Parent task
@@ -1276,3 +1276,18 @@ th:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

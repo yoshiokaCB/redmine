@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -398,7 +398,7 @@ module Redmine
     #   * :label - label for the formatter displayed in application settings
     #
     # Examples:
-    #   wiki_format_provider(:custom_formatter, CustomFormatter, :label => "My custom formatter") 
+    #   wiki_format_provider(:custom_formatter, CustomFormatter, :label => "My custom formatter")
     #
     def wiki_format_provider(name, *args)
       Redmine::WikiFormatting.register(name, *args)
@@ -422,7 +422,7 @@ module Redmine
         base_target_dir = File.join(destination, File.dirname(source_files.first).gsub(source, ''))
         begin
           FileUtils.mkdir_p(base_target_dir)
-        rescue Exception => e
+        rescue => e
           raise "Could not create directory #{base_target_dir}: " + e.message
         end
       end
@@ -433,7 +433,7 @@ module Redmine
         target_dir = File.join(destination, dir.gsub(source, ''))
         begin
           FileUtils.mkdir_p(target_dir)
-        rescue Exception => e
+        rescue => e
           raise "Could not create directory #{target_dir}: " + e.message
         end
       end
@@ -444,7 +444,7 @@ module Redmine
           unless File.exist?(target) && FileUtils.identical?(file, target)
             FileUtils.cp(file, target)
           end
-        rescue Exception => e
+        rescue => e
           raise "Could not copy #{file} to #{target}: " + e.message
         end
       end

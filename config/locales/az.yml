@@ -289,7 +289,7 @@ az:
   error_scm_command_failed: "Saxlayıcıya giriş imkanı səhvi: %{value}"
   error_scm_not_found: Saxlayıcıda yazı və/ və ya düzəliş yoxdur.
   error_unable_to_connect: Qoşulmaq mümkün deyildir (%{value})
-  error_unable_delete_issue_status: Tapşırığın statusunu silmək mümkün deyildir
+  error_unable_delete_issue_status: Tapşırığın statusunu silmək mümkün deyildir (%{value})
 
   field_account: İstifadəçi hesabı
   field_activity: Fəaliyyət
@@ -591,7 +591,6 @@ az:
   label_password_lost: Parolun bərpası
   label_permissions_report: Giriş hüquqları üzrə hesabat 
   label_permissions: Giriş hüquqları
-  label_please_login: Xahiş edirik, daxil olun.
   label_plugins: Modullar
   label_precedes: növbəti
   label_preferences: Üstünlük
@@ -910,6 +909,7 @@ az:
   text_unallowed_characters: Qadağan edilmiş simvollar
   text_user_mail_option: "Seçilməyən layihələr üçün Siz yalnız baxdığınız və ya iştirak etdiyiniz layihələr barədə bildiriş alacaqsınız məsələn, müəllifi olduğunuz layihələr və ya o layihələr ki, Sizə təyin edilib)."
   text_user_wrote: "%{value} yazıb:"
+  text_user_wrote_in: "%{value} yazıb (%{link}):"
   text_wiki_destroy_confirmation: Siz bu Wiki və onun tərkibindəkiləri silmək istədiyinizə əminsinizmi?
   text_workflow_edit: Vəziyyətlərin ardıcıllığını redaktə etmək üçün rol və trekeri seçin
 
@@ -1372,3 +1372,18 @@ az:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

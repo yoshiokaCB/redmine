@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -818,7 +818,10 @@ module Redmine
       field_attributes :user_role
 
       def possible_values_options(custom_field, object=nil)
-        possible_values_records(custom_field, object).map {|u| [u.name, u.id.to_s]}
+        users = possible_values_records(custom_field, object)
+        options = users.map {|u| [u.name, u.id.to_s]}
+        options = [["<< #{l(:label_me)} >>", User.current.id]] + options if users.include?(User.current)
+        options
       end
 
       def possible_values_records(custom_field, object=nil)

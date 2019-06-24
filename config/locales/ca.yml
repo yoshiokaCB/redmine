@@ -195,7 +195,7 @@ ca:
   error_issue_done_ratios_not_updated: "No s'ha actualitzat el percentatge dels assumptes."
   error_workflow_copy_source: "Seleccioneu un tipus d'assumpte o rol font"
   error_workflow_copy_target: "Seleccioneu tipus d'assumptes i rols objectiu"
-  error_unable_delete_issue_status: "No s'ha pogut suprimir l'estat de l'assumpte"
+  error_unable_delete_issue_status: "No s'ha pogut suprimir l'estat de l'assumpte (%{value})"
   error_unable_to_connect: "No s'ha pogut connectar (%{value})"
   warning_attachments_not_saved: "No s'han pogut desar %{count} fitxers."
   error_ldap_bind_credentials: "Compte/Contrasenya LDAP incorrecte"
@@ -473,7 +473,6 @@ ca:
   label_enumeration_new: "Nou valor"
   label_information: "Informació"
   label_information_plural: "Informació"
-  label_please_login: "Si us plau, inicieu sessió"
   label_register: "Registrar"
   label_login_with_open_id_option: "o entrar amb OpenID"
   label_password_lost: "Has oblidat la contrasenya?"
@@ -862,6 +861,7 @@ ca:
   text_assign_time_entries_to_project: "Assignar les hores informades al projecte"
   text_reassign_time_entries: "Tornar a assignar les hores informades a aquest assumpte:"
   text_user_wrote: "%{value} va escriure:"
+  text_user_wrote_in: "%{value} va escriure (%{link}):"
   text_enumeration_destroy_question: "%{count} objectes estan assignats a aquest valor."
   text_enumeration_category_reassign_to: "Torna a assignar-los a aquest valor:"
   text_email_delivery_not_configured: "El lliurament per correu electrònic no està configurat i les notificacions estan inhabilitades.\nConfigureu el servidor SMTP a config/configuration.yml i reinicieu l'aplicació per habilitar-lo."
@@ -1270,3 +1270,18 @@ ca:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

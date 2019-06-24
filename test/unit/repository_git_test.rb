@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -29,14 +29,6 @@ class RepositoryGitTest < ActiveSupport::TestCase
 
   NUM_REV = 28
   NUM_HEAD = 8
-
-  ## Git, Mercurial and CVS path encodings are binary.
-  ## Subversion supports URL encoding for path.
-  ## Redmine Mercurial adapter and extension use URL encoding.
-  ## Git accepts only binary path in command line parameter.
-  ## So, there is no way to use binary command line parameter in JRuby.
-  JRUBY_SKIP     = (RUBY_PLATFORM == 'java')
-  JRUBY_SKIP_STR = "TODO: This test fails in JRuby"
 
   def setup
     User.current = nil
@@ -461,8 +453,6 @@ class RepositoryGitTest < ActiveSupport::TestCase
 
       if WINDOWS_PASS
         puts WINDOWS_SKIP_STR
-      elsif JRUBY_SKIP
-        puts JRUBY_SKIP_STR
       else
         # latin-1 encoding path
         changesets = @repository.latest_changesets(
@@ -483,8 +473,6 @@ class RepositoryGitTest < ActiveSupport::TestCase
     def test_latest_changesets_latin_1_dir
       if WINDOWS_PASS
         puts WINDOWS_SKIP_STR
-      elsif JRUBY_SKIP
-        puts JRUBY_SKIP_STR
       else
         assert_equal 0, @repository.changesets.count
         @repository.fetch_changesets

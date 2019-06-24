@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -294,7 +294,7 @@ module Redmine
             full_args_locale << scm_iconv(@path_encoding, 'UTF-8', e)
           end
           ret = shellout(
-                   self.class.sq_bin + ' ' + 
+                   self.class.sq_bin + ' ' +
                      full_args_locale.map { |e| shell_quote e.to_s }.join(' '),
                    &block
                    )
@@ -313,7 +313,7 @@ module Redmine
             full_args_locale << scm_iconv(@path_encoding, 'UTF-8', e)
           end
           ret = shellout(
-                   self.class.sq_bin + ' ' + 
+                   self.class.sq_bin + ' ' +
                      full_args_locale.map { |e| shell_quote e.to_s }.join(' '),
                    &block
                    )

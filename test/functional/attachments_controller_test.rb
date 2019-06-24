@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -453,6 +453,20 @@ class AttachmentsControllerTest < Redmine::ControllerTest
     puts '(ImageMagick convert not available)'
   end
 
+  if gs_installed?
+    def test_thumbnail_for_pdf_should_be_png
+      Attachment.clear_thumbnails
+      @request.session[:user_id] = 2
+      get :thumbnail, :params => {
+          :id => 23   # ecookbook-gantt.pdf
+        }
+      assert_response :success
+      assert_equal 'image/png', response.content_type
+    end
+  else
+    puts '(GhostScript convert not available)'
+  end
+
   def test_edit_all
     @request.session[:user_id] = 2
     get :edit_all, :params => {
@@ -509,12 +523,12 @@ class AttachmentsControllerTest < Redmine::ControllerTest
           '1' => {
             :filename => 'newname.text',
             :description => ''
-          },    
+          },
                   '4' => {
             :filename => 'newname.rb',
             :description => 'Renamed'
-          },    
-                
+          },
+
         }
       }
 
@@ -533,12 +547,12 @@ class AttachmentsControllerTest < Redmine::ControllerTest
           '1' => {
             :filename => '',
             :description => ''
-          },    
+          },
                   '4' => {
             :filename => 'newname.rb',
             :description => 'Renamed'
-          },    
-                
+          },
+
         }
       }
 

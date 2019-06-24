@@ -323,7 +323,6 @@ it:
   label_enumeration_new: Nuovo valore
   label_information: Informazione
   label_information_plural: Informazioni
-  label_please_login: Entra
   label_register: Registrati
   label_password_lost: Password dimenticata
   label_home: Home
@@ -709,6 +708,7 @@ it:
   mail_body_reminder: "%{count} segnalazioni che ti sono state assegnate scadranno nei prossimi %{days} giorni:"
   mail_subject_reminder: "%{count} segnalazioni in scadenza nei prossimi %{days} giorni"
   text_user_wrote: "%{value} ha scritto:"
+  text_user_wrote_in: "%{value} ha scritto (%{link}):"
   label_duplicated_by: duplicata da
   setting_enabled_scm: SCM abilitato
   text_enumeration_category_reassign_to: 'Riassegnale a questo valore:'
@@ -881,7 +881,7 @@ it:
   permission_export_wiki_pages: Esporta pagine wiki
   setting_cache_formatted_text: Cache testo formattato
   permission_manage_project_activities: Gestisci attività progetti
-  error_unable_delete_issue_status: Impossibile eliminare lo stato segnalazioni
+  error_unable_delete_issue_status: Impossibile eliminare lo stato segnalazioni (%{value})
   label_profile: Profilo
   permission_manage_subtasks: Gestisci sottoattività
   field_parent_issue: Attività principale
@@ -1275,3 +1275,18 @@ it:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -382,7 +382,7 @@ class MyControllerTest < Redmine::ControllerTest
   end
 
   def test_update_account
-    post :account, :params => {
+    put :account, :params => {
         :user => {
           :firstname => "Joe",
           :login => "root",
@@ -407,7 +407,7 @@ class MyControllerTest < Redmine::ControllerTest
 
   def test_update_account_should_send_security_notification
     ActionMailer::Base.deliveries.clear
-    post :account, :params => {
+    put :account, :params => {
         :user => {
           :mail => 'foobar@example.com'
 

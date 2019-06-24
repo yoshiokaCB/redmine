@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -292,7 +292,8 @@ class UsersControllerTest < Redmine::ControllerTest
           'time_zone' => 'Paris',
           'comments_sorting' => 'desc',
           'warn_on_leaving_unsaved' => '0',
-          'textarea_font' => 'proportional'
+          'textarea_font' => 'proportional',
+          'history_default_tab' => 'history'
         }
       }
     end
@@ -303,6 +304,7 @@ class UsersControllerTest < Redmine::ControllerTest
     assert_equal 'desc', user.pref[:comments_sorting]
     assert_equal '0', user.pref[:warn_on_leaving_unsaved]
     assert_equal 'proportional', user.pref[:textarea_font]
+    assert_equal 'history', user.pref[:history_default_tab]
   end
 
   def test_create_with_generate_password_should_email_the_password
@@ -420,8 +422,11 @@ class UsersControllerTest < Redmine::ControllerTest
 
 
   def test_edit
-    get :edit, :params => {:id => 2}
+    with_settings :gravatar_enabled => '1' do
+      get :edit, :params => {:id => 2}
+    end
     assert_response :success
+    assert_select 'h2>a+img.gravatar'
     assert_select 'input[name=?][value=?]', 'user[login]', 'jsmith'
   end
 

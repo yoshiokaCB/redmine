@@ -447,7 +447,6 @@ hr:
   label_enumeration_new: Nova vrijednost
   label_information: Informacija
   label_information_plural: Informacije
-  label_please_login: Molim prijavite se
   label_register: Registracija
   label_login_with_open_id_option: or login with OpenID
   label_password_lost: Izgubljena zaporka
@@ -830,6 +829,7 @@ hr:
   text_assign_time_entries_to_project: Pridruži prijavljene sate projektu
   text_reassign_time_entries: 'Premjesti prijavljene sate ovom predmetu:'
   text_user_wrote: "%{value} je napisao/la:"
+  text_user_wrote_in: "%{value} je napisao/la (%{link}):"
   text_enumeration_destroy_question: "%{count} objekata je pridruženo toj vrijednosti."
   text_enumeration_category_reassign_to: 'Premjesti ih ovoj vrijednosti:'
   text_email_delivery_not_configured: "Email delivery is not configured, and notifications are disabled.\nConfigure your SMTP server in config/configuration.yml and restart the application to enable them."
@@ -878,7 +878,7 @@ hr:
   permission_export_wiki_pages: Export wiki pages
   setting_cache_formatted_text: Cache formatted text
   permission_manage_project_activities: Manage project activities
-  error_unable_delete_issue_status: Unable to delete issue status
+  error_unable_delete_issue_status: Unable to delete issue status (%{value})
   label_profile: Profile
   permission_manage_subtasks: Manage subtasks
   field_parent_issue: Parent task
@@ -1277,3 +1277,18 @@ hr:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

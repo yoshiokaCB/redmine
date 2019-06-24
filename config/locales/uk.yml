@@ -345,7 +345,6 @@ uk:
   label_enumeration_new: Нове значення
   label_information: Інформація
   label_information_plural: Інформація
-  label_please_login: Будь ласка, увійдіть
   label_register: Зареєструватися
   label_password_lost: Забули пароль
   label_home: Домашня сторінка
@@ -720,6 +719,7 @@ uk:
   mail_body_reminder: "%{count} призначених на Вас задач на наступні %{days} днів:"
   mail_subject_reminder: "%{count} призначених на Вас задач в найближчі %{days} дні"
   text_user_wrote: "%{value} писав(ла):"
+  text_user_wrote_in: "%{value} писав(ла) (%{link}):"
   label_duplicated_by: дублюється
   setting_enabled_scm: Увімкнені SCM
   text_enumeration_category_reassign_to: 'Надати їм наступне значення:'
@@ -892,7 +892,7 @@ uk:
   permission_export_wiki_pages: Експорт wiki-сторінок
   setting_cache_formatted_text: Кешувати форматований текст
   permission_manage_project_activities: Управління типами дій для проекту
-  error_unable_delete_issue_status: Неможливо видалити статус задачі
+  error_unable_delete_issue_status: Неможливо видалити статус задачі (%{value})
   label_profile: Профіль
   permission_manage_subtasks: Управління підзадачами
   field_parent_issue: Батьківська задача
@@ -1268,3 +1268,18 @@ uk:
   label_updated_issues: Updated issues
   text_avatar_server_config_html: The current avatar server is <a href="%{url}">%{url}</a>.
     You can configure it in config/configuration.yml.
+  setting_gantt_months_limit: Maximum number of months displayed on the gantt chart
+  label_import_time_entries: Import time entries
+  label_import_notifications: Send email notifications during the import
+  text_gs_available: ImageMagick PDF support available (optional)
+  field_recently_used_projects: Number of recently used projects in jump box
+  label_optgroup_bookmarks: Bookmarks
+  label_optgroup_others: Other projects
+  label_optgroup_recents: Recently used
+  button_project_bookmark: Add bookmark
+  button_project_bookmark_delete: Remove bookmark
+  field_history_default_tab: Issue's history default tab
+  label_issue_history_properties: Property changes
+  label_issue_history_notes: Notes
+  label_last_tab_visited: Last visited tab
+  field_unique_id: Unique ID

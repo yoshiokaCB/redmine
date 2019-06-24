@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -1165,7 +1165,7 @@ document.write("Hello World!");
 RAW
 
     expected = <<-EXPECTED
-<pre><code class=\"ECMA_script syntaxhl\"><span class=\"cm\">/* Hello */</span><span class=\"nb\">document</span><span class=\"p\">.</span><span class=\"nx\">write</span><span class=\"p\">(</span><span class=\"s2\">\"Hello World!\"</span><span class=\"p\">);</span></code></pre>
+<pre><code class="ECMA_script syntaxhl"><span class="cm">/* Hello */</span><span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="dl">"</span><span class="s2">Hello World!</span><span class="dl">"</span><span class="p">);</span></code></pre>
 EXPECTED
 
     assert_equal expected.gsub(%r{[\r\n\t]}, ''), textilizable(raw).gsub(%r{[\r\n\t]}, '')
@@ -1463,85 +1463,36 @@ RAW
     end
   end
 
-  def test_avatar_with_user
-    with_settings :gravatar_enabled => '1' do
-      assert_include Digest::MD5.hexdigest('jsmith@somenet.foo'), avatar(User.find_by_mail('jsmith@somenet.foo'))
-    end
+  def test_render_page_hierarchy
+    parent_page = WikiPage.find(1)
+    child_page = WikiPage.find_by(parent_id: parent_page.id)
+    pages_by_parent_id = { nil => [parent_page], parent_page.id => [child_page] }
+    result = render_page_hierarchy(pages_by_parent_id, nil)
+    assert_select_in result, 'ul.pages-hierarchy li a[href=?]', project_wiki_page_path(project_id: parent_page.project, id: parent_page.title, version: nil )
+    assert_select_in result, 'ul.pages-hierarchy li ul.pages-hierarchy a[href=?]', project_wiki_page_path(project_id: child_page.project, id: child_page.title, version: nil )
   end
 
-  def test_avatar_with_email_string
-    with_settings :gravatar_enabled => '1' do
-      assert_include Digest::MD5.hexdigest('jsmith@somenet.foo'), avatar('jsmith <jsmith@somenet.foo>')
-    end
+  def test_render_page_hierarchy_with_timestamp
+    parent_page = WikiPage.find(1)
+    child_page = WikiPage.find_by(parent_id: parent_page.id)
+    pages_by_parent_id = { nil => [parent_page], parent_page.id => [child_page] }
+    result = render_page_hierarchy(pages_by_parent_id, nil, :timestamp => true)
+    assert_select_in result, 'ul.pages-hierarchy li a[title=?]', l(:label_updated_time, distance_of_time_in_words(Time.now, parent_page.updated_on))
+    assert_select_in result, 'ul.pages-hierarchy li ul.pages-hierarchy a[title=?]', l(:label_updated_time, distance_of_time_in_words(Time.now, child_page.updated_on))
   end
 
-  def test_avatar_with_anonymous_user
-    with_settings :gravatar_enabled => '1' do
-      assert_match %r{src="/images/anonymous.png(\?\d+)?"}, avatar(User.anonymous)
-    end
-  end
+  def test_render_page_hierarchy_when_action_is_export
+    parent_page = WikiPage.find(1)
+    child_page = WikiPage.find_by(parent_id: parent_page.id)
+    pages_by_parent_id = { nil => [parent_page], parent_page.id => [child_page] }
 
-  def test_avatar_with_group
-    with_settings :gravatar_enabled => '1' do
-      assert_nil avatar(Group.first)
-    end
-  end
+    # Change controller and action using stub
+    controller.stubs(:controller_name).returns('wiki')
+    controller.stubs(:action_name).returns("export")
 
-  def test_avatar_with_invalid_arg_should_return_nil
-    with_settings :gravatar_enabled => '1' do
-      assert_nil avatar('jsmith')
-      assert_nil avatar(nil)
-    end
-  end
-
-  def test_avatar_default_size_should_be_50
-    with_settings :gravatar_enabled => '1' do
-      assert_include 'size=50', avatar('jsmith <jsmith@somenet.foo>')
-    end
-  end
-
-  def test_avatar_with_size_option
-    with_settings :gravatar_enabled => '1' do
-      assert_include 'size=24', avatar('jsmith <jsmith@somenet.foo>', :size => 24)
-      assert_include 'width="24" height="24"', avatar(User.anonymous, :size => 24)
-    end
-  end
-
-  def test_avatar_with_html_option
-    with_settings :gravatar_enabled => '1' do
-      # Non-avatar options should be considered html options
-      assert_include 'title="John Smith"', avatar('jsmith <jsmith@somenet.foo>', :title => 'John Smith')
-    end
-  end
-
-  def test_avatar_css_class
-    with_settings :gravatar_enabled => '1' do
-      # The default class of the img tag should be gravatar
-      assert_include 'class="gravatar"', avatar('jsmith <jsmith@somenet.foo>')
-      assert_not_include 'class="gravatar"', avatar('jsmith <jsmith@somenet.foo>', :class => 'picture')
-      assert_include 'class="picture"', avatar('jsmith <jsmith@somenet.foo>', :class => 'picture')
-    end
-  end
-
-  def test_avatar_disabled
-    with_settings :gravatar_enabled => '0' do
-      assert_equal '', avatar(User.find_by_mail('jsmith@somenet.foo'))
-    end
-  end
-
-  def test_avatar_server_url
-    to_test = {
-      'https://www.gravatar.com' => %r|https://www.gravatar.com/avatar/\h{32}|,
-      'https://seccdn.libravatar.org' => %r|https://seccdn.libravatar.org/avatar/\h{32}|,
-      'http://localhost:8080' => %r|http://localhost:8080/avatar/\h{32}|,
-    }
-    with_settings :gravatar_enabled => '1' do
-      to_test.each do |url, expected|
-        Redmine::Configuration.with 'avatar_server_url' => url do
-          assert_match expected, avatar('<jsmith@somenet.foo>')
-        end
-      end
-    end
+    result = render_page_hierarchy(pages_by_parent_id, nil)
+    assert_select_in result, 'ul.pages-hierarchy li a[href=?]', "##{parent_page.title}"
+    assert_select_in result, 'ul.pages-hierarchy li ul.pages-hierarchy a[href=?]', "##{child_page.title}"
   end
 
   def test_link_to_user
@@ -1855,6 +1806,15 @@ RAW
     assert_equal '<span class="hours hours-int">0</span><span class="hours hours-dec">:45</span>', html_hours('0:45')
     assert_equal '<span class="hours hours-int">0</span><span class="hours hours-dec">.75</span>', html_hours('0.75')
   end
+
+  def test_form_for_includes_name_attribute
+    assert_match(/name="new_issue-[a-z0-9]{8}"/, form_for(Issue.new){})
+  end
+
+  def test_labelled_form_for_includes_name_attribute
+    assert_match(/name="new_issue-[a-z0-9]{8}"/, labelled_form_for(Issue.new){})
+  end
+
 
   private
 

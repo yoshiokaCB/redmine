@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Redmine - project management software
-# Copyright (C) 2006-2017  Jean-Philippe Lang
+# Copyright (C) 2006-2019  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -219,6 +219,19 @@ class ProjectsController < ApplicationController
       @project.unarchive
     end
     redirect_to_referer_or admin_projects_path(:status => params[:status])
+  end
+
+  def bookmark
+    jump_box = Redmine::ProjectJumpBox.new User.current
+    if request.delete?
+      jump_box.delete_project_bookmark @project
+    elsif request.post?
+      jump_box.bookmark_project @project
+    end
+    respond_to do |format|
+      format.js
+      format.html { redirect_to project_path(@project) }
+    end
   end
 
   def close
