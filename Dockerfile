@@ -1,46 +1,62 @@
 FROM ruby:2.6-slim-stretch
 
-ENV LANG C.UTF-8
-ENV REDMINE_LANG ja
-ENV APP_HOME /var/lib/redmine
+ENV TZ="Asia/Tokyo" \
+    LANG="ja_JP.UTF-8" \
+    LC_CTYPE="ja_JP.UTF-8" \
+    REDMINE_LANG="ja" \
+    APP_HOME="/var/lib/redmine"
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN set -eux; \
-	apt-get update && \
-	apt-get install -y --no-install-recommends \
-		ca-certificates \
-		wget \
-		\
-		bzr \
-		git \
-		mercurial \
-		openssh-client \
-		subversion \
-		gsfonts \
-		imagemagick libmagick++-dev \
-		build-essential \
+  apt-get update && \
+  apt-get install -y --no-install-recommends \
+    ca-certificates \
+    wget \
+    vim \
+    \
+    bzr \
+    openssh-client \
+    gsfonts \
+    imagemagick libmagick++-dev \
+    build-essential \
     libpq-dev \
+    apache2 apache2-dev libapr1-dev libaprutil1-dev libcurl4-openssl-dev \
     ; \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*;
+    rm -rf /var/lib/apt/lists/*; \
+    gem install passenger -v 6.0.3; \
+    passenger-install-apache2-module --auto --languages ruby;
+
 ENV DEBIAN_FRONTEND dialog
 
+RUN : "redmine.conf" && { \
+    echo "<VirtualHost *:80>"; \
+    echo "ServerName ${HOSTNAME}"; \
+    echo "ServerAdmin webmaster@localhost"; \
+    echo "DocumentRoot /var/lib/redmine/public"; \
+    echo "ErrorLog ${APACHE_LOG_DIR}/error.log"; \
+    echo "CustomLog ${APACHE_LOG_DIR}/access.log combined"; \
+    echo "#RailsEnv production"; \
+    echo "RailsEnv development"; \
+    echo "PassengerEnabled on"; \
+    echo "<Directory "/var/lib/redmine/public">"; \
+    echo "  Require all granted"; \
+    echo "</Directory>"; \
+    echo "</VirtualHost>"; \
+  } | tee /etc/apache2/conf-available/redmine.conf; \
+  a2enconf redmine; \
+  : "default.comf" && { \
+    echo "LoadModule passenger_module /usr/local/bundle/gems/passenger-6.0.2/buildout/apache2/mod_passenger.so"; \
+    echo "<IfModule mod_passenger.c>"; \
+    echo "  PassengerRoot /usr/local/bundle/gems/passenger-6.0.2"; \
+    echo "  PassengerDefaultRuby /usr/local/bin/ruby"; \
+    echo "</IfModule>"; \
+    echo "PassengerMaxPoolSize 20"; \
+    echo "PassengerMaxInstancesPerApp 4"; \
+    echo "PassengerPoolIdleTime 864000"; \
+    echo "PassengerStatThrottleRate 10"; \
+  } | tee /etc/apache2/sites-enabled/000-default.conf;
 
-# RUN apt-get update && \
-#   : "必要ライブラリーのインストール" && \
-#   apt-get install -y \
-#   task-japanese \
-#   build-essential zlib1g-dev libssl-dev libreadline-dev libyaml-dev libcurl4-openssl-dev libffi-dev \
-#   imagemagick libmagick++-dev \
-#   subversion tzdata libpq-dev && \
-#   apt-get clean && \
-#   rm -rf /var/lib/apt/lists/* \
-#   \
-#   : "日本語対応" && \
-#   locale-gen ja_JP.UTF-8;
-
-#   language-pack-ja \
-#   imagemagick libmagick++-dev fonts-takao-pgothic \
 
 WORKDIR $APP_HOME
 ADD . $APP_HOME
@@ -48,27 +64,11 @@ ADD . $APP_HOME
 RUN : "仮のdatabase.ymlを作成" && { \
     echo "production:"; \
     echo "  adapter: postgresql"; \
-    echo "  database: <%= ENV['RAILS_DB'] %>"; \
-    echo "  username: <%= ENV['RAILS_DB_USERNAME'] %>"; \
-    echo "  password: <%= ENV['RAILS_DB_PASSWORD'] %>"; \
-    echo "  host: <%= ENV['RAILS_DB_HOST'] %>"; \
-    echo "  encoding: <%= ENV['RAILS_DB_ENCODING'] %>"; \
     echo "development:"; \
     echo "  adapter: postgresql"; \
-    echo "  database: <%= ENV['RAILS_DB'] %>_development"; \
-    echo "  username: <%= ENV['RAILS_DB_USERNAME'] %>"; \
-    echo "  password: <%= ENV['RAILS_DB_PASSWORD'] %>"; \
-    echo "  host: <%= ENV['RAILS_DB_HOST'] %>"; \
-    echo "  encoding: <%= ENV['RAILS_DB_ENCODING'] %>"; \
     echo "test:"; \
     echo "  adapter: postgresql"; \
-    echo "  database: <%= ENV['RAILS_DB'] %>_test"; \
-    echo "  username: <%= ENV['RAILS_DB_USERNAME'] %>"; \
-    echo "  password: <%= ENV['RAILS_DB_PASSWORD'] %>"; \
-    echo "  host: <%= ENV['RAILS_DB_HOST'] %>"; \
-    echo "  encoding: <%= ENV['RAILS_DB_ENCODING'] %>"; \
   } | tee /var/lib/redmine/config/database.yml;
-
 
 COPY ./start.sh /
 COPY ./entrypoint.sh /

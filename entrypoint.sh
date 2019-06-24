@@ -43,4 +43,15 @@ fi
 
 bundle exec rake generate_secret_token
 
+bundle install
+bundle exec rake db:create
+bundle exec rake db:migrate
+bundle exec rake redmine:plugins:migrate
+
+if [ $RAILS_ENV = 'production' ]; then
+  bundle exec rake redmine:load_default_data
+else
+  bundle exec rails db:fixtures:load
+fi
+
 exec "$@"
