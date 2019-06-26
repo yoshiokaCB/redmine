@@ -24,6 +24,31 @@
     echo "  encoding: <%= ENV['RAILS_DB_ENCODING'] %>"; \
 } | tee /var/lib/redmine/config/database.yml
 
+{ \
+    echo "production:"; \
+    echo "  access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>"; \
+    echo "  secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>"; \
+    echo "  bucket: <%= ENV['S3_BUCKET_NAME'] %>"; \
+    echo "  folder: <%= ENV['S3_FOLDER_NAME'] %>"; \
+    echo "  endpoint: <%= ENV['S3_ENDPOINT'] %>"; \
+    echo "  secure: true"; \
+    echo "  private: true"; \
+    echo "  expires:"; \
+    echo "  proxy: false"; \
+    echo "  thumb_folder:"; \
+    echo "development:"; \
+    echo "  access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>"; \
+    echo "  secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>"; \
+    echo "  bucket: <%= ENV['S3_BUCKET_NAME'] %>"; \
+    echo "  folder: <%= ENV['S3_FOLDER_NAME'] %>"; \
+    echo "  endpoint: <%= ENV['S3_ENDPOINT'] %>"; \
+    echo "  secure: true"; \
+    echo "  private: true"; \
+    echo "  expires:"; \
+    echo "  proxy: false"; \
+    echo "  thumb_folder:"; \
+} | tee /var/lib/redmine/config/s3.yml
+
 if [ ! $RAILS_ENV = 'test' ]; then
 
 { \

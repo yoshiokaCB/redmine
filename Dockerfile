@@ -24,7 +24,7 @@ RUN set -eux; \
     ; \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*; \
-    gem install passenger -v 6.0.3; \
+    gem install passenger -v 6.0.2; \
     passenger-install-apache2-module --auto --languages ruby;
 
 ENV DEBIAN_FRONTEND dialog
@@ -57,6 +57,9 @@ RUN : "redmine.conf" && { \
     echo "PassengerStatThrottleRate 10"; \
   } | tee /etc/apache2/sites-enabled/000-default.conf;
 
+WORKDIR /tmp
+ADD ./Gemfile /tmp
+RUN bundle install
 
 WORKDIR $APP_HOME
 ADD . $APP_HOME
@@ -70,20 +73,24 @@ RUN : "仮のdatabase.ymlを作成" && { \
     echo "  adapter: postgresql"; \
   } | tee /var/lib/redmine/config/database.yml;
 
+COPY apache-conf/rm01.conf /etc/apache2/conf-available/
+COPY apache-conf/rm02.conf /etc/apache2/conf-available/
+COPY apache-conf/rm03.conf /etc/apache2/conf-available/
+RUN a2enconf rm01; \
+    a2enconf rm02; \
+    a2enconf rm03;
+RUN ln -s $APP_HOME /var/lib/rm01; \
+    ln -s $APP_HOME /var/lib/rm02; \
+    ln -s $APP_HOME /var/lib/rm03
+
+
 COPY ./start.sh /
 COPY ./entrypoint.sh /
 RUN chmod +x /start.sh && \
   chmod +x /entrypoint.sh && \
   bundle update
 
-# ENV RAILS_ENV production
-# COPY ./docker-entrypoint.sh /
-# COPY ./docker-entrypoint.rb /
-# RUN chmod +x /docker-entrypoint.sh && chmod +x /docker-entrypoint.rb
-
-
 EXPOSE 3000
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/start.sh"]
-# CMD ["irb"]

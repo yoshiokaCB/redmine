@@ -48,8 +48,15 @@ services:
       REDMINE_MAIL_DOMAIN: example.com
       REDMINE_IMAGEMGICK_PATH: /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
 
+      AWS_ACCESS_KEY_ID: xxxxx
+      AWS_SECRET_ACCESS_KEY: xxxxx
+      S3_BUCKET_NAME: xxxxx
+      S3_FOLDER_NAME: files
+      S3_ENDPOINT: s3.amazonaws.com
+
     ports: 
       - "3000:3000"
+      - "3001:80"
       # - "25:25"
     depends_on:
       - db
