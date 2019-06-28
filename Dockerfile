@@ -73,12 +73,12 @@ RUN : "仮のdatabase.ymlを作成" && { \
     echo "  adapter: postgresql"; \
   } | tee /var/lib/redmine/config/database.yml;
 
-COPY apache-conf/rm01.conf /etc/apache2/conf-available/
-COPY apache-conf/rm02.conf /etc/apache2/conf-available/
-COPY apache-conf/rm03.conf /etc/apache2/conf-available/
-RUN a2enconf rm01; \
-    a2enconf rm02; \
-    a2enconf rm03;
+# COPY apache-conf/rm01.conf /etc/apache2/conf-available/
+# COPY apache-conf/rm02.conf /etc/apache2/conf-available/
+# COPY apache-conf/rm03.conf /etc/apache2/conf-available/
+# RUN a2enconf rm01; \
+#     a2enconf rm02; \
+#     a2enconf rm03;
 RUN ln -s $APP_HOME /var/lib/rm01; \
     ln -s $APP_HOME /var/lib/rm02; \
     ln -s $APP_HOME /var/lib/rm03

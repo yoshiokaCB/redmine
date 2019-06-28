@@ -49,6 +49,62 @@
     echo "  thumb_folder:"; \
 } | tee /var/lib/redmine/config/s3.yml
 
+{ \
+    echo "<VirtualHost *:80>"; \
+    echo "ServerName ${SVN01}"; \
+    echo "ServerAdmin webmaster@localhost"; \
+    echo "DocumentRoot /var/lib/rm01/public"; \
+    echo "ErrorLog /error.log"; \
+    echo "CustomLog /access.log combined"; \
+    echo "#RailsEnv production"; \
+    echo "RailsEnv development"; \
+    echo "PassengerEnabled on"; \
+    echo "SetEnv RAILS_DB rm01"; \
+    echo "SetEnv S3_FOLDER_NAME rm01-files"; \
+    echo "<Directory /var/lib/rm01/public>"; \
+    echo "  Require all granted"; \
+    echo "</Directory>"; \
+    echo "</VirtualHost>"; \
+} | tee /etc/apache2/conf-available/rm01.conf
+{ \
+    echo "<VirtualHost *:80>"; \
+    echo "ServerName ${SVN02}"; \
+    echo "ServerAdmin webmaster@localhost"; \
+    echo "DocumentRoot /var/lib/rm02/public"; \
+    echo "ErrorLog /error.log"; \
+    echo "CustomLog /access.log combined"; \
+    echo "#RailsEnv production"; \
+    echo "RailsEnv development"; \
+    echo "PassengerEnabled on"; \
+    echo "SetEnv RAILS_DB rm02"; \
+    echo "SetEnv S3_FOLDER_NAME rm02-files"; \
+    echo "<Directory /var/lib/rm02/public>"; \
+    echo "  Require all granted"; \
+    echo "</Directory>"; \
+    echo "</VirtualHost>"; \
+} | tee /etc/apache2/conf-available/rm02.conf
+{ \
+    echo "<VirtualHost *:80>"; \
+    echo "ServerName ${SVN03}"; \
+    echo "ServerAdmin webmaster@localhost"; \
+    echo "DocumentRoot /var/lib/rm03/public"; \
+    echo "ErrorLog /error.log"; \
+    echo "CustomLog /access.log combined"; \
+    echo "#RailsEnv production"; \
+    echo "RailsEnv development"; \
+    echo "PassengerEnabled on"; \
+    echo "SetEnv RAILS_DB rm03"; \
+    echo "SetEnv S3_FOLDER_NAME rm03-files"; \
+    echo "<Directory /var/lib/rm03/public>"; \
+    echo "  Require all granted"; \
+    echo "</Directory>"; \
+    echo "</VirtualHost>"; \
+} | tee /etc/apache2/conf-available/rm03.conf
+
+a2enconf rm01
+a2enconf rm02
+a2enconf rm03
+
 if [ ! $RAILS_ENV = 'test' ]; then
 
 { \
