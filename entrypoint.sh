@@ -3,7 +3,7 @@
 { \
     echo "production:"; \
     echo "  adapter: postgresql"; \
-    echo "  database: <%= ENV['RAILS_DB'] %>"; \
+    echo "  database: <%= ENV['RAILS_DB'] %>_development"; \
     echo "  username: <%= ENV['RAILS_DB_USERNAME'] %>"; \
     echo "  password: <%= ENV['RAILS_DB_PASSWORD'] %>"; \
     echo "  host: <%= ENV['RAILS_DB_HOST'] %>"; \
@@ -49,61 +49,37 @@
     echo "  thumb_folder:"; \
 } | tee /var/lib/redmine/config/s3.yml
 
-{ \
-    echo "<VirtualHost *:80>"; \
-    echo "ServerName ${SVN01}"; \
-    echo "ServerAdmin webmaster@localhost"; \
-    echo "DocumentRoot /var/lib/rm01/public"; \
-    echo "ErrorLog /error.log"; \
-    echo "CustomLog /access.log combined"; \
-    echo "#RailsEnv production"; \
-    echo "RailsEnv development"; \
-    echo "PassengerEnabled on"; \
-    echo "SetEnv RAILS_DB rm01"; \
-    echo "SetEnv S3_FOLDER_NAME rm01-files"; \
-    echo "<Directory /var/lib/rm01/public>"; \
-    echo "  Require all granted"; \
-    echo "</Directory>"; \
-    echo "</VirtualHost>"; \
-} | tee /etc/apache2/conf-available/rm01.conf
-{ \
-    echo "<VirtualHost *:80>"; \
-    echo "ServerName ${SVN02}"; \
-    echo "ServerAdmin webmaster@localhost"; \
-    echo "DocumentRoot /var/lib/rm02/public"; \
-    echo "ErrorLog /error.log"; \
-    echo "CustomLog /access.log combined"; \
-    echo "#RailsEnv production"; \
-    echo "RailsEnv development"; \
-    echo "PassengerEnabled on"; \
-    echo "SetEnv RAILS_DB rm02"; \
-    echo "SetEnv S3_FOLDER_NAME rm02-files"; \
-    echo "<Directory /var/lib/rm02/public>"; \
-    echo "  Require all granted"; \
-    echo "</Directory>"; \
-    echo "</VirtualHost>"; \
-} | tee /etc/apache2/conf-available/rm02.conf
-{ \
-    echo "<VirtualHost *:80>"; \
-    echo "ServerName ${SVN03}"; \
-    echo "ServerAdmin webmaster@localhost"; \
-    echo "DocumentRoot /var/lib/rm03/public"; \
-    echo "ErrorLog /error.log"; \
-    echo "CustomLog /access.log combined"; \
-    echo "#RailsEnv production"; \
-    echo "RailsEnv development"; \
-    echo "PassengerEnabled on"; \
-    echo "SetEnv RAILS_DB rm03"; \
-    echo "SetEnv S3_FOLDER_NAME rm03-files"; \
-    echo "<Directory /var/lib/rm03/public>"; \
-    echo "  Require all granted"; \
-    echo "</Directory>"; \
-    echo "</VirtualHost>"; \
-} | tee /etc/apache2/conf-available/rm03.conf
+ruby /entrypoint.rb
+# COUNT=0
+# $APP_HOME="/var/lib/redmine"
+# while [ $COUNT -lt 100 ]; do
 
-a2enconf rm01
-a2enconf rm02
-a2enconf rm03
+#     COUNT=$(( COUNT + 1 )) # COUNT をインクリメント
+#     # echo "hgoehoge$COUNT"
+#     # echo $COUNT
+
+#     ln -s $APP_HOME "/var/lib/rm${COUNT}"
+
+#     { \
+#       echo "<VirtualHost *:80>"; \
+#       echo "ServerName redmine-${COUNT}.dev.cloudz-0211.work"; \
+#       echo "ServerAdmin webmaster@localhost"; \
+#       echo "DocumentRoot /var/lib/rm${COUNT}/public"; \
+#       echo "ErrorLog /error.log"; \
+#       echo "CustomLog /access.log combined"; \
+#       echo "RailsEnv ${RAILS_ENV}"; \
+#       echo "PassengerEnabled on"; \
+#       echo "SetEnv RAILS_DB rm${COUNT}"; \
+#       echo "SetEnv S3_FOLDER_NAME rm${COUNT}-files"; \
+#       echo "<Directory /var/lib/rm${COUNT}/public>"; \
+#       echo "  Require all granted"; \
+#       echo "</Directory>"; \
+#       echo "</VirtualHost>"; \
+#     } | tee "/etc/apache2/conf-available/rm${COUNT}.conf"
+
+#     a2enconf "rm${COUNT}"
+
+# done
 
 if [ ! $RAILS_ENV = 'test' ]; then
 
@@ -123,6 +99,11 @@ else
 fi
 
 bundle exec rake generate_secret_token
+
+chown redmine:redmine "$APP_HOME"
+chmod 1777 "$APP_HOME"
+chmod -R ugo=rwX config db
+find log tmp -type d -exec chmod 1777 '{}' +
 
 bundle install
 bundle exec rake db:create

@@ -6,6 +6,8 @@ ENV TZ="Asia/Tokyo" \
     REDMINE_LANG="ja" \
     APP_HOME="/var/lib/redmine"
 
+RUN groupadd -r redmine && useradd -r -g redmine redmine
+
 ENV DEBIAN_FRONTEND noninteractive
 RUN set -eux; \
   apt-get update && \
@@ -73,22 +75,31 @@ RUN : "仮のdatabase.ymlを作成" && { \
     echo "  adapter: postgresql"; \
   } | tee /var/lib/redmine/config/database.yml;
 
+RUN chown redmine:redmine "$APP_HOME"; \
+    chmod 1777 "$APP_HOME"; \
+    chmod -R ugo=rwX config db; \
+	  find log tmp -type d -exec chmod 1777 '{}' +
+
 # COPY apache-conf/rm01.conf /etc/apache2/conf-available/
 # COPY apache-conf/rm02.conf /etc/apache2/conf-available/
 # COPY apache-conf/rm03.conf /etc/apache2/conf-available/
 # RUN a2enconf rm01; \
 #     a2enconf rm02; \
 #     a2enconf rm03;
-RUN ln -s $APP_HOME /var/lib/rm01; \
-    ln -s $APP_HOME /var/lib/rm02; \
-    ln -s $APP_HOME /var/lib/rm03
+#RUN ln -s $APP_HOME /var/lib/rm01; \
+#    ln -s $APP_HOME /var/lib/rm02; \
+#    ln -s $APP_HOME /var/lib/rm03
 
+
+RUN gem install aws-sdk
 
 COPY ./start.sh /
 COPY ./entrypoint.sh /
+COPY ./entrypoint.rb /
 RUN chmod +x /start.sh && \
   chmod +x /entrypoint.sh && \
-  bundle update
+  chmod +x /entrypoint.rb && \
+  bundle install
 
 EXPOSE 3000
 

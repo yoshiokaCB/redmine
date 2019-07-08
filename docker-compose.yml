@@ -34,26 +34,21 @@ services:
 
   app:
     build: .
+    env_file: 
+      - ./app.env
     environment:
       RAILS_DB_HOST: db
       RAILS_DB: redmine
       RAILS_DB_USERNAME: redmine
       RAILS_DB_PASSWORD: password
       RAILS_DB_ENCODING: utf8
-      RAILS_ENV: development
-
+      # RAILS_ENV: development
+      RAILS_ENV: production
       REDMINE_MAIL_DELIVERY_METHOD: smtp
       REDMINE_MAIL_ADDRESS: localhost
       REDMINE_MAIL_PORT: 25
       REDMINE_MAIL_DOMAIN: example.com
       REDMINE_IMAGEMGICK_PATH: /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
-
-      AWS_ACCESS_KEY_ID: xxxxx
-      AWS_SECRET_ACCESS_KEY: xxxxx
-      S3_BUCKET_NAME: redmine-static-file
-      S3_FOLDER_NAME: redmine
-      S3_ENDPOINT: s3.amazonaws.com
-
       SVN01: rm01-fn.app.local
       SVN02: rm02-fn.app.local
       SVN03: rm03-fn.app.local
