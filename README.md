@@ -11,7 +11,7 @@ More details can be found in the doc directory or on the official website http:/
 ```
 $ git clone -b docker/virtualhost https://github.com/yoshiokaCB/redmine.git
 $ cd redmine
-$ git clone git://github.com/ka8725/redmine_s3.git plugins/redmine_s3
+$ git clone https://github.com/yoshiokaCB/redmine_s3.git plugins/redmine_s3
 ```
 
 ## Build
