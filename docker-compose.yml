@@ -1,0 +1,64 @@
+version: '3'
+services:
+
+  # PostgreSQL
+
+  db:
+    image: postgres:9.5
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: redmine
+    # ports:
+    #   - 5432:5432
+    # volumes:
+    #   - ./db/postgres:/var/lib/postgresql/data
+
+  app:
+    build: .
+    env_file:
+      - ./app.env
+    environment:
+      RAILS_DB_HOST: db
+      RAILS_DB: redmine
+      RAILS_DB_USERNAME: redmine
+      RAILS_DB_PASSWORD: password
+      RAILS_DB_ENCODING: utf8
+      # RAILS_ENV: development
+      RAILS_ENV: production
+      # DB_CREATE: 'true'
+      DB_CREATE: 'false'
+      REDMINE_MAIL_DELIVERY_METHOD: smtp
+      REDMINE_MAIL_ADDRESS: localhost
+      REDMINE_MAIL_PORT: 25
+      REDMINE_MAIL_DOMAIN: example.com
+      REDMINE_IMAGEMGICK_PATH: /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+
+
+      START_SERVERS: 8
+      MIN_SPARE_SERVERS: 5
+      MAX_SPARE_SERVERS: 20
+      SERVER_LIMIT: 256
+      MAX_CLIENTS: 256
+      MAX_REQUESTS_PER_CHILD: 4000
+      PASSENGER_MAX_POOL_SIZE: 160
+      PASSENGER_MAX_INSTANCES_PER_APP: 2
+      PASSENGER_MAX_REQUESTS: 500
+      PASSENGER_MIN_INSTANCES: 0
+      PASSENGER_POOL_IDLE_TIME: 14400
+      PASSENGER_MAX_REQUEST_QUEUESIZE: 200
+    ports:
+      - "3000:3000"
+      - "3001:80"
+      - "8080:80"
+      # - "25:25"
+    depends_on:
+      - db
+    volumes:
+      - .:/var/lib/redmine
+
+# volumes:
+#   redmine_data:
+#     driver: local
+#   postgres_data:
+#     driver: local

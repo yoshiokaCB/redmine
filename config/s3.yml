@@ -1,0 +1,22 @@
+production:
+  access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>
+  secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
+  bucket: <%= ENV['S3_BUCKET_NAME'] %>
+  folder: <%= ENV['S3_FOLDER_NAME'] %>
+  endpoint: <%= ENV['S3_ENDPOINT'] %>
+  secure: true
+  private: true
+  expires:
+  proxy: false
+  thumb_folder:
+development:
+  access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>
+  secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
+  bucket: <%= ENV['S3_BUCKET_NAME'] %>
+  folder: <%= ENV['S3_FOLDER_NAME'] %>
+  endpoint: <%= ENV['S3_ENDPOINT'] %>
+  secure: true
+  private: true
+  expires:
+  proxy: false
+  thumb_folder:
